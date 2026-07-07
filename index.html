@@ -7,10 +7,16 @@
     <!-- 引入 Tailwind CSS 與 FontAwesome 圖標 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 Leaflet 地圖引擎（GitHub Pages 免金鑰專用規格） -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
         .timeline-line::before {
             content: ''; position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background-color: #cbd5e1;
+        }
+        .custom-pin {
+            display: flex; align-items: center; justify-content: center;
         }
     </style>
 </head>
@@ -37,16 +43,21 @@
     <!-- 主區塊 -->
     <main class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- 左側：天數分頁與時間軸 -->
+        <!-- 左側：天數分頁、時間軸 ＆ 大地圖容器 -->
         <section class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <!-- 天數切換 Tabs -->
+            <!-- 天數與地圖切換 Tabs -->
             <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4" id="day-tabs">
                 <!-- 由 JS 動態生成 -->
             </div>
 
-            <!-- 動態時間軸容器 -->
+            <!-- 區塊 A：動態時間軸容器 -->
             <div class="relative timeline-line pl-10 space-y-6" id="timeline-container">
                 <!-- 由 JS 動態渲染當天行程 -->
+            </div>
+
+            <!-- 區塊 B：大地圖顯示容器 -->
+            <div id="map-container" class="hidden w-full h-[600px] rounded-2xl overflow-hidden border border-slate-200 shadow-inner relative">
+                <div id="map" class="w-full h-full z-10"></div>
             </div>
         </section>
 
@@ -96,8 +107,8 @@
                     <i class="fa-solid fa-circle-exclamation text-amber-600"></i> 行前重要備忘
                 </h4>
                 <ul class="text-xs text-amber-900/80 space-y-2 list-disc pl-4">
-                    <li><strong>小孩機票</strong>：請致電長榮客服 (02-2501-1999) 憑代號 <span class="font-mono font-bold">EWETA8</span> 為四歲寶貝加購兒童票並做同行關聯。</li>
                     <li><strong>照片命名秘訣</strong>：將相片重新命名為對應之編號（例如 <span class="font-mono bg-amber-100 px-1 rounded text-amber-800">D1-1.jpg</span>）放進同目錄，網頁會自動精準抓取！</li>
+                    <li><strong>地圖導航防呆</strong>：網頁右側按鈕支援當地 App 跳轉，地圖分頁別針可同時點擊看相對位置。</li>
                 </ul>
             </div>
 
@@ -106,67 +117,79 @@
 
     <!-- JavaScript 互動邏輯資料庫 -->
     <script>
-        // 行程資料庫 (全面注入對齊專屬編碼 code)
+        // 行程資料庫 (已修正 D4-2A 與 D3-5B 的重疊座標問題)
         const itineraryData = {
             1: {
                 title: "Day 1 ｜ 抵達釜山 ＆ 全家共遊水樂園",
                 date: "7/22 (週三)",
+                color: "#3b82f6", 
+                colorClass: "bg-blue-500",
                 events: [
-                    { code: "D1-1", time: "11:35", name: "抵達釜山金海機場", tag: "交通", desc: "降落金海國際機場，入境後推著行李推車直接前往計程車搭乘區。排隊搭乘排班大排計程車直奔海雲台飯店。", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD" },
-                    { code: "D1-2", time: "12:30", name: "海雲台 Felix by STX 寄放行李", tag: "飯店", desc: "抵達位在海雲台地鐵站直通、生活機能絕佳的 Felix by STX 酒店。先將大件行李與推車寄放在櫃檯，即可輕鬆空手下樓到街上用餐與逛街。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
-                    { code: "D1-3", time: "13:15", name: "海雲台市區悠閒午餐", tag: "美食", desc: "就在飯店正下方的龜南路主街上享用道地且不辣的豬肉湯飯、海苔飯捲或傳統定食，為大人小孩補充滿滿體力。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" },
-                    { code: "D1-4", time: "14:30", name: "Club D Oasis 水上樂園 ＆ 汗蒸幕", tag: "全家放電", desc: "全家一起前往就在海雲台沙灘旁 LCT 大樓的 Club D Oasis。這裡全家大小（包含四歲寶貝）都可以一起進場！內部擁有絕美海景無邊際泳池、室內外溫水水上樂園、漂漂河，以及頂級的高空汗蒸幕 SPA。太太可以享受朝思暮想的汗蒸幕舒壓，爸爸可以陪孩子在水上樂園打水仗，各得其樂又不用分頭行動！", google: "https://www.google.com/maps/search/?api=1&query=Club+D+Oasis+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%1%B4%EB%9F%BD%EB%94%94+%EC%98%A4%EC%95%84%EC%8B%9C%EC%8A%A4" },
-                    { code: "D1-5", time: "19:00", name: "全家會合 ｜ 味贊王鹽烤肉晚餐", tag: "美食", desc: "從水樂園放電完散步回飯店辦理正式入住並洗漱。晚餐步行前往附近的味贊王鹽烤肉享用厚切熟成烤肉，店員全程專業代烤免動手，加點不辣的綿密蒸蛋拌飯，大人小孩都輕鬆自在！", google: "https://www.google.com/maps/search/?api=1&query=Matchanduel+Wangsgumgui+Haeundae", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EB%A7%9B%EC%B0%AC%ED%95%B8%EC%96%85%EC%86%8C%EA%B8%88%EA%B5%AC%EC%9D%B4" }
+                    { code: "D1-1", lat: 35.1796, lng: 128.9382, time: "11:35", name: "抵達釜山金海機場", tag: "交通", desc: "降落金海國際機場，入境後推著行李推車直接前往計程車搭乘區。排隊搭乘排班大排計程車直奔海雲台飯店。", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD", img: "fusan_airport.jpg" },
+                    { code: "D1-2", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台 Felix by STX 寄放行李", tag: "飯店", desc: "抵達位在海雲台地鐵站直通、生活機能絕佳的 Felix by STX 酒店。先將大件行李與推車寄放在櫃檯，即可輕鬆空手下樓到街上用餐與逛街。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
+                    { code: "D1-3", lat: 35.1610, lng: 129.1595, time: "13:15", name: "海雲台市區悠閒午餐", tag: "美食", desc: "就在飯店正下方的龜南路主街上享用道地且不辣的豬肉湯飯、海苔飯捲或傳統定食，為大人小孩補充滿滿體力。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" },
+                    { code: "D1-4", lat: 35.1601, lng: 129.1672, time: "14:30", name: "Club D Oasis 水上樂園 ＆ 汗蒸幕", tag: "全家放電", desc: "全家一起前往就在海雲台沙灘旁 LCT 大樓的 Club D Oasis。這裡全家大小都可以一起進場！內部擁有海景無邊際泳池、室內外溫水水上樂園、漂漂河，以及頂級的高空汗蒸幕 SPA。太太享受大汗淋漓的汗蒸幕，爸爸帶寶貝衝水上滑梯放電，完美不分流！", google: "https://www.google.com/maps/search/?api=1&query=Club+D+Oasis+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%1%B4%EB%9F%BD%EB%94%94+%EC%98%A4%EC%95%84%EC%8B%9C%EC%8A%A4" },
+                    { code: "D1-5", lat: 35.1616, lng: 129.1602, time: "19:00", name: "全家會合 ｜ 味贊王鹽烤肉晚餐", tag: "美食", desc: "從水樂園放電完散步回飯店辦理正式入住並洗漱。晚餐步行前往附近的味贊王鹽烤肉享用厚切熟成烤肉，店員全程專業代烤免動手，加點不辣的綿密蒸蛋拌飯，大人小孩都輕鬆自在！", google: "https://www.google.com/maps/search/?api=1&query=Matchanduel+Wangsgumgui+Haeundae", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EB%A7%9B%EC%B0%AC%ED%95%B8%EC%96%85%EC%86%8C%EA%B8%88%EA%B5%AC%EC%9D%B4" }
                 ]
             },
             2: {
                 title: "Day 2 ｜ 機張順向一日遊 ＆ 下午積木博物館",
                 date: "7/23 (週四)",
+                color: "#10b981", 
+                colorClass: "bg-emerald-500",
                 events: [
-                    { code: "D2-1", time: "09:30", name: "Skyline Luge 斜坡滑車", tag: "玩樂", desc: "早上出門第一站直奔機張滑車場（人最少免排隊）。大人用 BIG 3 Pass 換票，現場幫四歲小童加購超便宜的「親子同乘票」。爸爸用胸膛環抱著孩子同乘一輛滑車，沿著山坡賽道滑下，極度刺激好玩！", google: "https://www.google.com/maps/search/?api=1&query=Skyline+Luge+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%8A%A4%EC%B1%B4%EC%9D%B4%EB%9D%BC%0A%EC%9D%B8%EB%A3%A8%EC%A7%80+%EB%B6%85%EC%82%B0" },
-                    { code: "D2-2", time: "11:15", name: "機張頂級海景咖啡廳 ＆ 中餐", tag: "美景", desc: "玩完滑車直接到位在隔壁附近的頂級度假海景咖啡廳（如 Coralani 或 Waveon）。此時正值中午烈日，剛好進入冷氣房內。大人躺在面向蔚藍大海的沙發椅上喝冠軍咖啡放空，順便享用精緻輕食與午餐。", google: "https://www.google.com/maps/search/?api=1&query=Coralani+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%BD%94%EB%9E%84%EB%9D%BC%EB%8B%8意" },
-                    { code: "D2-3", time: "14:00", name: "機張積木博物館 (Brick Campus)", tag: "室內避暑", desc: "下午兩點直奔同在 Osiria 園區內的積木校園博物館。全室內超強冷氣、全平路推車暢行無阻。裡面展示了世界頂級積木大師的壯觀作品，還有巨大的積木自由創作區、賽車道互動，孩子放電、大人躲太陽最完美！", google: "https://www.google.com/maps/search/?api=1&query=Brick+Campus+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%B8%A1%EC%BA%A1%ED%8D%BC%EC%8A%A4+%EB%B6%85%EC%82%B0" },
-                    { code: "D2-4", time: "16:30", name: "順向返回 Felix by STX 舒適休息", tag: "飯店", desc: "行程一條龍完美收工，不走回頭路搭計程車返回海雲台飯店。Felix by STX 擁有非常寬敞的公寓式套房客廳，極度適合全家人在沙發彻底大字型躺平休息、在冷氣房吃下午茶點心，幫寶貝充飽電力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
-                    { code: "D2-5", time: "18:30", name: "海雲台主街特色晚餐", tag: "美食", desc: "下樓出飯店即是海雲台最熱鬧的商圈街區。悠閒挑選道地餐館享用特色晚餐，吃飽後全家還可以順便逛逛周邊的生活超市或美妝店。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" }
+                    { code: "D2-1", lat: 35.1950, lng: 129.2272, time: "09:30", name: "Skyline Luge 斜坡滑車", tag: "玩樂", desc: "早上出門第一站直奔機張滑車場（人最少免排隊）。大人用 BIG 3 Pass 換票，現場幫四歲小童加購超便宜的「親子同乘票」。爸爸用胸膛環抱著孩子同乘一輛滑車，沿著山坡賽道滑下，極度刺激好玩！", google: "https://www.google.com/maps/search/?api=1&query=Skyline+Luge+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%8A%A4%EC%B1%B4%EC%9D%B4%EB%9D%BC%0A%EC%9D%B8%EB%A3%A8%EC%A7%80+%EB%B6%85%EC%82%B0" },
+                    { code: "D2-2", lat: 35.1978, lng: 129.2301, time: "11:15", name: "機張頂級海景咖啡廳 ＆ 中餐", tag: "美景", desc: "玩完滑車直接到位在隔壁附近的頂級度假海景咖啡廳（如 Coralani 或 Waveon）。此時正值中午烈日，剛好進入冷氣房內。大人躺在面向蔚藍大海的沙發椅上喝冠軍咖啡放空，順便享用精緻輕食與午餐。", google: "https://www.google.com/maps/search/?api=1&query=Coralani+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%BD%94%EB%9E%84%EB%9D%BC%EB%8B%8意" },
+                    { code: "D2-3", lat: 35.1918, lng: 129.2166, time: "14:00", name: "機張積木博物館 (Brick Campus)", tag: "室內避暑", desc: "下午兩點直奔同在 Osiria 園區內的積木校園博物館。全室內超強冷氣、全平路推車暢行無阻。裡面展示了世界頂級積木大師的壯觀作品，還有巨大的積木自由創作區、賽車道互動，孩子放電、大人躲太陽最完美！", google: "https://www.google.com/maps/search/?api=1&query=Brick+Campus+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%B8%A1%EC%BA%A1%ED%8D%BC%EC%8A%A4+%EB%B6%85%EC%82%B0" },
+                    { code: "D2-4", lat: 35.1631, lng: 129.1589, time: "16:30", name: "順向返回 Felix by STX 舒適休息", tag: "飯店", desc: "行程一條龍完美收工，不走回頭路搭計程車返回海雲台飯店。Felix by STX 擁有非常寬敞的公寓式套房客廳，極度適合全家人在沙發彻底大字型躺平休息、在冷氣房吃下午茶點心，幫寶貝充飽電力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
+                    { code: "D2-5", lat: 35.1610, lng: 129.1595, time: "18:30", name: "海雲台主街特色晚餐", tag: "美食", desc: "下樓出飯店即是海雲台最熱鬧的商圈街區。悠閒挑選道地餐館享用特色晚餐，吃飽後全家還可以順便逛逛周邊的生活超市或美妝店。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" }
                 ]
             },
             3: {
                 title: "Day 3 ｜ 天空膠囊火車 ＆ 高空星巴克",
                 date: "7/24 (週五)",
+                color: "#a855f7", 
+                colorClass: "bg-purple-500",
                 events: [
-                    { code: "D3-1", time: "08:20", name: "抵達青沙浦平交道拍小火車", tag: "美景", desc: "提早搭計程車抵達「青沙浦站」。這時候觀光客最少、晨光最美，可以推著推車在經典的「平交道海景小火車」前拍出極具日系文青感的全家福大片。", google: "https://www.google.com/maps/search/?api=1&query=Cheongsapo+Station", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%B2%AD%EC%82%AC%ED%8F%AC%EC%97%AD" },
-                    { code: "D3-2", time: "09:00", name: "海雲台藍線公園天空膠囊列車", tag: "必去", desc: "搭乘已預訂好的 09:00 繽紛獨立小火車（青沙浦 → 尾浦）。這條動線是「精準靠海側」，車速緩慢且空間獨立私密，四歲寶貝會當成好玩的遊樂設施，爸媽可以安心面向大海拍出絕美照片。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Blueline+Park+Mipo", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80%EB%B8%94%EB%A3%A8%EB%9D%BC%EC%9D%B1%ED%1A%ED%11%AC+%EB%AF%B8%ED%8F%AC%EC%A0%95%EA%B1%B0%EC%9E%A5" },
-                    { code: "D3-3", time: "10:00", name: "釜山 X the Sky 100樓高空觀景台", tag: "必去", desc: "抵達尾浦站後，直接步行到隔壁的釜山最高摩天大樓（大人用 BIG 3 Pass 換票）。前往 99 樓的世界最高星巴克喝拿鐵、居高臨下俯瞰整條弧形海雲台沙灘，館內還設有豐富的 Baby Shark 多媒體互動區供小孩玩耍。", google: "https://www.google.com/maps/search/?api=1&query=Busan+X+the+Sky", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%B6%85%EC%82%B0%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B1%B4%EC%9D%B4" },
-                    { code: "D3-4", time: "12:30", name: "海雲台市區中餐 ＆ 飯店家庭式午睡", tag: "飯店", desc: "在尾浦附近或走回海雲台主街享用經典中餐。吃飽後步行回站前飯店，全家人在寬敞的冷氣套房好好大字型睡午覺補眠，調配小童體力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
-                    { code: "D3-5A", time: "16:00", name: "海雲台沙灘挖沙踏浪", tag: "彈性 A", desc: "【下午平行自由行程】從飯店推車散步到前方寬闊的沙灘上堆沙堡、赤腳踏浪。爸媽可以在陽傘下輕鬆吹著海風，享受最純粹的海雲台海濱度假風情。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Beach", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80%ED%95%B4%EC%98%81%EC%9E%A5" },
-                    { code: "D3-5B", time: "16:00", name: "LCT Mall 高質感室內商場", tag: "彈性 B", desc: "【下午平行自由行程】直接從 X the Sky 大樓低樓層開逛。室內冷氣開極強，動線極其寬敞好推車。裡面有許多極具質感、設計感的韓國在地選品店、服飾與文青海景咖啡廳。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+LCT", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80LCT%EB%AA%B0" },
-                    { code: "D3-5C", time: "16:00", name: "海理團路文青潮流散策", tag: "彈性 C", desc: "【下午平行自由行程】從飯店後方走路1分鐘即進駐。由老舊住宅重新改造成釜山現今最紅的設計街區，佈滿精緻文創雜貨、童裝小物、設計服飾與網美法式甜點店，極適合隨性尋寶。", google: "https://www.google.com/maps/search/?api=1&query=Haeridan-gil", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EB%A6%AC%EB%8B%A8%EA%B8%B8" },
-                    { code: "D3-6", time: "18:30", name: "晚餐享用海雲台在地特色美食", tag: "美食", desc: "結束下午的悠閒任選行程，步行或就近在海雲台商圈尋找高人氣的釜山特色料理或不辣的暖胃湯飯。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" }
+                    { code: "D3-1", lat: 35.1624, lng: 129.1914, time: "08:20", name: "抵達青沙浦平交道拍小火車", tag: "美景", desc: "提早搭計程車抵達「青沙浦站」。這時候觀光客最少、晨光最美，可以推著推車在經典的「平交道海景小火車」前拍出極具日系文青感的全家福大片。", google: "https://www.google.com/maps/search/?api=1&query=Cheongsapo+Station", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%B2%AD%EC%82%AC%ED%8F%AC%0A%EC%97%AD" },
+                    { code: "D3-2", lat: 35.1598, lng: 129.1678, time: "09:00", name: "海雲台藍線公園天空膠囊列車", tag: "必去", desc: "搭乘已預訂好的 09:00 繽紛獨立小火車（青沙浦 → 尾浦）。這條動線是「精準靠海側」，車速緩慢且空間獨立私密，四歲寶貝會當成好玩的遊樂設施，爸媽可以安心面向大海拍出絕美照片。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Blueline+Park+Mipo", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80%EB%B8%94%EB%A3%A8%EB%9D%BC%EC%9D%B1%ED%1A%ED%11%AC+%EB%AF%B8%ED%8F%AC%EC%A0%95%EA%B1%B0%EC%9E%A5" },
+                    { code: "D3-3", lat: 35.1601, lng: 129.1672, time: "10:00", name: "釜山 X the Sky 100樓高空觀景台", tag: "必去", desc: "抵達尾浦站後，直接步行到隔壁的釜山最高摩天大樓（大人用 BIG 3 Pass 換票）。前往 99 樓的世界最高星巴克喝拿鐵、居高臨下俯瞰整條弧形海雲台沙灘，館內還設有豐富的 Baby Shark 多媒體互動區供小孩玩耍。", google: "https://www.google.com/maps/search/?api=1&query=Busan+X+the+Sky", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%B6%85%EC%82%B0%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B1%B4%EC%9D%B4" },
+                    { code: "D3-4", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台市區中餐 ＆ 飯店家庭式午睡", tag: "飯店", desc: "在尾浦附近或走回海雲台主街享用經典中餐。吃飽後步行回站前飯店，全家人在寬敞的冷氣套房好好大字型睡午覺補眠，調配小童體力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%8E%A0%EB%A6%AD%EC%8A%A4%EB%B0%94%EC%9D%B4STX" },
+                    { code: "D3-5A", lat: 35.1587, lng: 129.1604, time: "16:00", name: "海雲台沙灘挖沙踏浪", tag: "彈性 A", desc: "【下午平行自由行程】從飯店推車散步到前方寬闊的沙灘上堆沙堡、赤腳踏浪。爸媽可以在陽傘下輕鬆吹著海風，享受最純粹的海雲台海濱度假風情。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Beach", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80%ED%95%B4%EC%98%81%EC%9E%A5" },
+                    { code: "D3-5B", lat: 35.1608, lng: 129.1682, time: "16:00", name: "LCT Mall 高質感室內商場", tag: "彈性 B", desc: "【下午平行自由行程，已微調座標防重疊】直接從 X the Sky 大樓低樓層開逛。室內冷氣開極強，動線極其寬敞好推車。裡面有許多極具質感、設計感的韓國在地選品店、服飾與文青海景咖啡廳。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+LCT", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80LCT%EB%AA%B0" },
+                    { code: "D3-5C", lat: 35.1650, lng: 129.1585, time: "16:00", name: "海理團路文青潮流散策", tag: "彈性 C", desc: "【下午平行自由行程】從飯店後方走路1分鐘即進駐。由老舊住宅重新改造成釜山現今最紅的設計街區，佈滿精緻文創雜貨、童裝小物、設計服飾與網美法式甜點店，極適合隨性尋寶。", google: "https://www.google.com/maps/search/?api=1&query=Haeridan-gil", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EB%A6%AC%EB%8B%A8%EA%B8%B8" },
+                    { code: "D3-6", lat: 35.1610, lng: 129.1595, time: "18:30", name: "晚餐享用海雲台在地特色美食", tag: "美食", desc: "結束下午的悠閒任選行程，步行或就近在海雲台商圈尋找高人氣的釜山特色料理或不辣的暖胃湯飯。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" }
                 ]
             },
             4: {
                 title: "Day 4 ｜ 甘川洞彩色山城 ＆ 廣安里無人機秀",
                 date: "7/25 (週六)",
+                color: "#ef4444", 
+                colorClass: "bg-red-500",
                 events: [
-                    { code: "D4-1", time: "09:30", name: "甘川洞文化村 ｜ 小王子彩色探險", tag: "必去", desc: "一早搭計程車直接攻頂甘川洞。特別注意：【此景點全是陡坡與無盡階梯，極度不適合推推車】。請全家穿好走的球鞋、輕裝牽著孩子。探訪經典的小王子與狐狸雕像，累了就進景觀咖啡廳俯瞰整座繽紛的彩色山城馬賽克。", google: "https://www.google.com/maps/search/?api=1&query=Gamcheon+Culture+Village", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B0%90%EC%B2%9C%EB%AC%B8%ED%99%94%EB%A7%88%EC%9D%84" },
-                    { code: "D4-2A", time: "13:00", name: "西面/南浦洞潮流商圈隨性逛", tag: "彈性 A", desc: "【下午平行自由行程】釜山最繁華的地面街區，享用澎湃豐富的傳統韓式在地定食。吃飽後可以一間間隨意逛街、探索韓國第一線的流行服飾、配件與潮流藥妝店。", google: "https://www.google.com/maps/search/?api=1&query=Seomyeon+Shopping+Street", naver: "https://m.map.naver.com/search2/search.naver?query=%EC%84%9C%EB%A9%B41%EB%B2%88%EA%B0%80" },
-                    { code: "D4-2B", time: "13:00", name: "樂天百貨總店奢華吹冷氣血拼", tag: "彈性 B", desc: "【下午平行自由行程】西面核心最頂級的定點避暑基地。全室內精品與免稅店一網打盡，7樓免稅店與地潮流區（引進 Mardi Mercredi、Matin Kim 等當紅服飾）極好買。9樓有絕美室內溫室公園可供推車小憩。", google: "https://www.google.com/maps/search/?api=1&query=Lotte+Department+Store+Busan+Main", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%A1%AF%EB%8D%B0%EB%B0%B1%ED%99%94%EC%A0%90+%EB%B6%85%EC%82%B0%EB%B3%B8%EC%A0%90" },
-                    { code: "D4-2C", time: "13:00", name: "影島 P.ARK 海景文化複合空間", tag: "彈性 C", desc: "【下午平行自由行程】甘川洞回程最順路。整棟六層樓高、擁有震撼全景大落地窗的面海現代文創聖地。全平路附大型電梯推車極完美，一邊喝著冠軍咖啡，一邊悠閒瀏覽海景巨型書店與設計雜貨。", google: "https://www.google.com/maps/search/?api=1&query=P.ARK+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%94%BC%EC%95%84%ED%81%AC" },
-                    { code: "D4-3", time: "18:30", name: "廣安里大橋無人機秀 ＆ 海景烤肉", tag: "高潮行程", desc: "搭計程車抵達廣安里海邊。晚餐已精選預訂海景第一排的高樓層落地窗餐廳。晚上 20:00 準時一到，全家一邊吹冷氣吃著奢華韓式烤肉、喝點小酒，一邊直接從餐廳巨大落地窗居高臨下平視欣賞夜空中壯觀的無人機點燈秀，免去在沙灘上人擠人的疲累！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B4%91%EC%95%88%EB%A6%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5" }
+                    { code: "D4-1", lat: 35.0975, lng: 129.0093, time: "09:30", name: "甘川洞文化村 ｜ 小王子彩色探險", tag: "必去", desc: "一早搭計程車直接攻頂甘川洞。特別注意：【此景點全是陡坡與無盡階梯，極度不適合推推車】。請全家穿好走的球鞋、輕裝牽著孩子。探訪經典的小王子與狐狸雕像，累了就進景觀咖啡廳看彩色山城。", google: "https://www.google.com/maps/search/?api=1&query=Gamcheon+Culture+Village", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B0%90%EC%B2%9C%EB%AC%B8%ED%99%94%EB%A7%88%EC%9D%84" },
+                    { code: "D4-2A", lat: 35.0985, lng: 129.0286, time: "13:00", name: "南浦洞潮流商圈隨性逛", tag: "彈性 A", desc: "【下午平行自由行程，已修正為南浦洞專屬座標】釜山最繁華的地面街區，享用澎湃豐富的傳統韓式在地定食。吃飽後可以一間間隨意逛街、探索韓國第一線的流行服飾與潮流藥妝店。", google: "https://www.google.com/maps/search/?api=1&query=Nampodong+Shopping+Street", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%82%A8%ED%8F%AC%EB%8F%99" },
+                    { code: "D4-2B", lat: 35.1569, lng: 129.0555, time: "13:00", name: "西面樂天百貨總店奢華血拼", tag: "彈性 B", desc: "【下午平行自由行程，維持西面座標】西面核心最頂級的定點避暑基地。全室內精品與免稅店一網打盡，7樓免稅店與地潮流區（引進 Mardi Mercredi、Matin Kim 等當紅服飾）極好買。9樓有大溫室公園可供休息。", google: "https://www.google.com/maps/search/?api=1&query=Lotte+Department+Store+Busan+Main", naver: "https://m.map.naver.com/search2/search.naver?query=%EB%A1%AF%EB%8D%B0%EB%B0%B1%ED%99%94%EC%A0%90+%EB%B6%85%EC%82%B0%EB%B3%B8%EC%A0%90" },
+                    { code: "D4-2C", lat: 35.0915, lng: 129.0782, time: "13:00", name: "影島 P.ARK 海景文化複合空間", tag: "彈性 C", desc: "【下午平行自由行程】甘川洞回程最順路。整棟六層樓高、擁有震撼全景大落地窗的面海現代文創聖地。全平路附大型電梯推車極完美，一邊喝著冠軍咖啡，一邊悠閒瀏覽海景巨型書店與設計雜貨。", google: "https://www.google.com/maps/search/?api=1&query=P.ARK+Busan", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%14%A8%EC%95%84%ED%81%AC" },
+                    { code: "D4-3", lat: 35.1532, lng: 129.1189, time: "18:30", name: "廣安里大橋無人機秀 ＆ 海景烤肉", tag: "高潮行程", desc: "搭計程車抵達廣安里海邊.晚餐已精選預訂海景第一排的高樓層落地窗餐廳。晚上 20:00 準時一到，全家一邊吃著奢華韓式烤肉，一邊直接從餐廳巨大落地窗居高臨下平視欣賞夜空中壯觀的無人機點燈秀！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B4%91%EC%95%88%EB%A6%AC%ED%95%B4%EC%88%98%20%EC%9A%95%EC%9E%A5" }
                 ]
             },
             5: {
                 title: "Day 5 ｜ 優雅早餐 ｜ 依依不捨返台",
                 date: "7/26 (週日)",
+                color: "#f97316", 
+                colorClass: "bg-orange-500",
                 events: [
-                    { code: "D5-1", time: "08:30", name: "海雲台主街優雅早餐", tag: "美食", desc: "在飯店周邊的文青早餐店、特色烘焙麵包店或咖啡廳享用最後的慢活早餐，拍拍照、整理戰利品。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" },
-                    { code: "D5-2", time: "09:45", name: "辦理退房 ｜ 計程車直奔機場", tag: "交通", desc: "辦理 Check-out 退房，行李下樓直接上計程車（地鐵站前叫車極方便）。將所有行李與四歲小童安全送上車，一路優雅直達金海機場。", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD" },
-                    { code: "D5-3", time: "12:45", name: "搭乘長榮航空 BR1193 返台", tag: "航班", desc: "於機場免稅店進行最後補貨。12:45 搭乘長榮航空 BR1193 班機返回台北，於 14:10 抵達桃園國際機場，帶回滿滿精美照片完美結束假期！", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD" }
+                    { code: "D5-1", lat: 35.1610, lng: 129.1595, time: "08:30", name: "海雲台主街優雅早餐", tag: "美食", desc: "在飯店周邊的文青早餐店、特色烘焙麵包店或咖啡廳享用最後的慢活早餐，拍拍照、整理戰利品。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://m.map.naver.com/search2/search.naver?query=%ED%95%B4%EC%9A%B4%EB%8C%80+%EA%B5%AC%EB%82%A8%EB%A1%9C" },
+                    { code: "D5-2", lat: 35.1631, lng: 129.1589, time: "09:45", name: "辦理退房 ｜ 計程車直奔機場", tag: "交通", desc: "辦理 Check-out 退房，行李下樓直接上計程車（地鐵站前叫車極方便）。將所有行李與四歲小童安全送上車，一路優雅直達金海機場。", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD" },
+                    { code: "D5-3", lat: 35.1796, lng: 128.9382, time: "12:45", name: "搭乘長榮航空 BR1193 返台", tag: "航班", desc: "於機場免稅店進行最後補貨。12:45 搭乘長榮航空 BR1193 班機返回台北，於 14:10 抵達桃園國際機場，帶回滿滿精美照片完美結束假期！", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://m.map.naver.com/search2/search.naver?query=%EA%B9%80%ED%95%B4%EA%B5%AD%EC%A0%9C%EA%B3%B5%ED%95%AD" }
                 ]
             }
         };
 
         let currentDay = 1;
+        let mapInstance = null;
+        let markerGroup = null;
 
         function init() {
             renderTabs();
@@ -179,19 +202,34 @@
             for (let i = 1; i <= 5; i++) {
                 const btn = document.createElement('button');
                 btn.className = `px-4 py-2 rounded-xl text-sm font-bold transition ${currentDay === i ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`;
-                btn.innerHTML = `D${i} <span class="text-xs font-normal opacity-80">${itineraryData[i].date.split(' ')[0]}</span>`;
+                btn.innerHTML = `D1-5 <span class="text-xs font-normal opacity-80">${itineraryData[i].date.split(' ')[0]}</span>`.replace('D1-5', `D${i}`);
                 btn.onclick = () => switchDay(i);
                 tabsContainer.appendChild(btn);
             }
+
+            const mapBtn = document.createElement('button');
+            mapBtn.className = `px-4 py-2 rounded-xl text-sm font-bold transition ${currentDay === 'map' ? 'bg-sky-600 text-white shadow-sm' : 'bg-sky-50 text-sky-700 hover:bg-sky-100'}`;
+            mapBtn.innerHTML = `<i class="fa-solid fa-map"></i> 🗺️ 全景地圖`;
+            mapBtn.onclick = () => switchDay('map');
+            tabsContainer.appendChild(mapBtn);
         }
 
         function switchDay(dayNum) {
             currentDay = dayNum;
             renderTabs();
-            renderTimeline(dayNum);
             
-            const firstEvent = itineraryData[dayNum].events[0];
-            if (firstEvent) updatePanel(firstEvent);
+            if (dayNum === 'map') {
+                document.getElementById('timeline-container').classList.add('hidden');
+                document.getElementById('map-container').classList.remove('hidden');
+                initFullMap();
+            } else {
+                document.getElementById('timeline-container').classList.remove('hidden');
+                document.getElementById('map-container').classList.add('hidden');
+                renderTimeline(dayNum);
+                
+                const firstEvent = itineraryData[dayNum].events[0];
+                if (firstEvent) updatePanel(firstEvent);
+            }
         }
 
         function renderTimeline(dayNum) {
@@ -205,7 +243,6 @@
 
             itineraryData[dayNum].events.forEach((event, index) => {
                 const item = document.createElement('div');
-                
                 let borderStyle = "border-slate-100 hover:border-sky-200 bg-slate-50/50 hover:bg-sky-50/30";
                 if(event.tag.includes("彈性")) {
                     borderStyle = "border-amber-100 hover:border-amber-300 bg-amber-50/10 hover:bg-amber-50/40";
@@ -241,6 +278,58 @@
             });
         }
 
+        function initFullMap() {
+            if (!mapInstance) {
+                mapInstance = L.map('map').setView([35.1631, 129.1589], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(mapInstance);
+                markerGroup = L.layerGroup().addTo(mapInstance);
+            } else {
+                markerGroup.clearLayers();
+                setTimeout(() => { mapInstance.invalidateSize(); }, 100);
+            }
+
+            const bounds = [];
+
+            for (let day in itineraryData) {
+                const colorClass = itineraryData[day].colorClass;
+
+                itineraryData[day].events.forEach(event => {
+                    if (event.lat && event.lng) {
+                        bounds.push([event.lat, event.lng]);
+
+                        const customIcon = L.divIcon({
+                            html: `<div class="w-7 h-7 rounded-full ${colorClass} text-white font-mono font-bold text-[9px] flex items-center justify-center border-2 border-white shadow-md transform hover:scale-125 transition duration-150">${event.code}</div>`,
+                            className: 'custom-pin',
+                            iconSize: [28, 28],
+                            iconAnchor: [14, 14]
+                        });
+
+                        const marker = L.marker([event.lat, event.lng], { icon: customIcon });
+                        
+                        marker.bindPopup(`
+                            <div class="text-sm p-1">
+                                <span class="font-mono font-bold text-xs px-1.5 py-0.5 rounded ${colorClass} text-white">${event.code}</span>
+                                <strong class="block mt-1 text-slate-900">${event.name}</strong>
+                                <span class="text-xs text-slate-500 block mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${event.time}</span>
+                            </div>
+                        `);
+                        
+                        marker.on('click', () => {
+                            updatePanel(event);
+                        });
+
+                        markerGroup.addLayer(marker);
+                    }
+                });
+            }
+
+            if (bounds.length > 0) {
+                mapInstance.fitBounds(bounds, { padding: [40, 40] });
+            }
+        }
+
         function updatePanel(event) {
             document.getElementById('panel-title').innerHTML = `<span class="text-slate-400 font-mono mr-2">[${event.code}]</span>${event.name}`;
             document.getElementById('panel-time').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> 預計時間 ｜ ${event.time}`;
@@ -259,13 +348,11 @@
             const imgElement = document.getElementById('panel-img');
             const placeholder = document.getElementById('panel-img-placeholder');
             
-            // 🌟 核心升級：優先讀取自訂路徑，次優先讀取「編號.jpg」(如 D1-2.jpg)
             let mockImgUrl = event.img || `${event.code}.jpg`;
             
-            // 自動防錯降級機制
             imgElement.onerror = function() {
-                this.onerror = null; // 避免無窮迴圈
-                let fallbackUrl = "https://images.unsplash.com/photo-1542296332-2e4473fac563?auto=format&fit=crop&w=600&q=80"; // 預設海景
+                this.onerror = null;
+                let fallbackUrl = "https://images.unsplash.com/photo-1542296332-2e4473fac563?auto=format&fit=crop&w=600&q=80";
                 
                 if (event.tag.includes("美食") || event.name.includes("午餐") || event.name.includes("晚餐")) {
                     fallbackUrl = "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80";
