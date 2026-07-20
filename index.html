@@ -15,9 +15,7 @@
         .timeline-line::before {
             content: ''; position: absolute; left: 18px; top: 0; bottom: 0; width: 2px; background-color: #cbd5e1;
         }
-        .custom-pin {
-            display: flex; align-items: center; justify-content: center;
-        }
+        .custom-pin { display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -46,14 +44,10 @@
         <!-- 左側：天數分頁、時間軸、大地圖 ＆ 實用韓文手冊容器 -->
         <section class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
             <!-- 天數與地圖、韓文切換 Tabs -->
-            <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4" id="day-tabs">
-                <!-- 由 JS 動態生成 -->
-            </div>
+            <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-100 pb-4" id="day-tabs"></div>
 
             <!-- 區塊 A：動態時間軸容器 -->
-            <div class="relative timeline-line pl-10 space-y-4" id="timeline-container">
-                <!-- 由 JS 動態渲染當天行程 -->
-            </div>
+            <div class="relative timeline-line pl-10 space-y-4" id="timeline-container"></div>
 
             <!-- 區塊 B：大地圖顯示容器 -->
             <div id="map-container" class="hidden w-full h-[600px] rounded-2xl overflow-hidden border border-slate-200 shadow-inner relative">
@@ -67,117 +61,25 @@
                     <p class="text-xs text-sky-100 mt-1">點擊任何韓文字卡欄位即可一鍵自動複製，亦可直接大螢幕出示給店員或司機看！</p>
                 </div>
 
-                <!-- 分組卡片區 -->
                 <div class="space-y-4">
-                    <!-- 類別 1: 🍲 餐廳與寶貝用餐 -->
                     <div class="border border-slate-100 rounded-xl p-4 space-y-3 bg-slate-50/50">
                         <h4 class="font-bold text-sm text-slate-900 border-l-4 border-amber-500 pl-2">🍲 餐廳與寶貝用餐</h4>
                         <div class="grid grid-cols-1 gap-2">
                             <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
                                 <span class="text-xs text-slate-400 font-medium block">請問這個會辣嗎？</span>
                                 <strong class="text-base text-slate-900 block font-bold mt-0.5">이거 매워요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(I-geo mae-wo-yo?)</span>
                             </div>
                             <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
                                 <span class="text-xs text-slate-400 font-medium block">請幫我做完全不辣，謝謝。</span>
                                 <strong class="text-base text-slate-900 block font-bold mt-0.5">안 맵게 해주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(An maep-ge hae-ju-se-yo.)</span>
                             </div>
                             <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
                                 <span class="text-xs text-slate-400 font-medium block">我要做辣的。（請幫我做辣的）</span>
                                 <strong class="text-base text-slate-900 block font-bold mt-0.5">맵게 해주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Maep-ge hae-ju-se-yo.)</span>
                             </div>
                             <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
                                 <span class="text-xs text-slate-400 font-medium block">我想要水。（請給我水，謝謝）</span>
                                 <strong class="text-base text-slate-900 block font-bold mt-0.5">물 좀 주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Mul jom ju-se-yo.)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請問有提供小童（嬰兒）座椅嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">아기 의자 있나요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(A-gi ui-ja in-na-yo?)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請給我一份濕紙巾，謝謝。</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">물티슈 좀 주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Mul-ti-syu jom ju-se-yo.)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 類別 2: 🛍️ 市場與童裝小店挖寶 -->
-                    <div class="border border-slate-100 rounded-xl p-4 space-y-3 bg-slate-50/50">
-                        <h4 class="font-bold text-sm text-slate-900 border-l-4 border-orange-500 pl-2">🛍️ 市場與童裝小店挖寶</h4>
-                        <div class="grid grid-cols-1 gap-2">
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請問這裡有賣童裝（孩子衣服）嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">아동복 있어요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(A-dong-bok is-seo-yo?)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">這個多少錢？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">이거 얼마예요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(I-geo eol-ma-yeo-yo?)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請問有更大一點的尺碼嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">더 큰 사이즈 있어요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Deo keun sa-i-jeu is-seo-yo?)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請問有更小一點的尺碼嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">더 작은 사이즈 있어요?</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Deo ja-geun sa-i-jeu is-seo-yo?)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">老闆，可以算便宜一點嗎？（殺價救星）</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">좀 깎아주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Jom kkak-a-ju-se-yo.)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">可以用信用卡刷卡結帳嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">카드로 계산해 주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Ka-deu-ro gye-san-hae ju-se-yo.)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 類別 3: 🚕 交通、行李與計程車 -->
-                    <div class="border border-slate-100 rounded-xl p-4 space-y-3 bg-slate-50/50">
-                        <h4 class="font-bold text-sm text-slate-900 border-l-4 border-emerald-500 pl-2">🚕 計程車轉乘與推車行李</h4>
-                        <div class="grid grid-cols-1 gap-2">
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">請帶我前往這個地址。</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">이 주소로 가주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(I ju-so-ro ga-ju-se-yo.)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">司機大叔，請幫忙開啟一下後車廂（放行李與嬰兒推車）。</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">트렁크 좀 열어주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Teu-reong-keu jom yeol-eo-ju-se-yo.)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 類別 4: 🏨 飯店服務與常用禮貌 -->
-                    <div class="border border-slate-100 rounded-xl p-4 space-y-3 bg-slate-50/50">
-                        <h4 class="font-bold text-sm text-slate-900 border-l-4 border-indigo-500 pl-2">🏨 飯店大廳與禮貌常用語</h4>
-                        <div class="grid grid-cols-1 gap-2">
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">可以幫我寄放一下行李與嬰兒車嗎？</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">짐 좀 맡겨주세요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Jim jom mat-gyeo-ju-se-yo.)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">不好意思 / 請問一下（叫店員或尋求協助開頭語）。</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">저기요 / 잠시만요.</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Jeo-gi-yo / Jam-si-man-yo.)</span>
-                            </div>
-                            <div onclick="phraseCopy(this)" class="bg-white p-3 rounded-lg border border-slate-200 cursor-pointer active:scale-[0.99] transition">
-                                <span class="text-xs text-slate-400 font-medium block">非常感謝您！</span>
-                                <strong class="text-base text-slate-900 block font-bold mt-0.5">감사합니다!</strong>
-                                <span class="text-[10px] text-slate-400 font-mono block mt-0.5">(Gam-sa-ham-ni-da!)</span>
                             </div>
                         </div>
                     </div>
@@ -185,24 +87,22 @@
             </div>
         </section>
 
-        <!-- 右側：動態景點看板 ＆ 互動行前清單 -->
+        <!-- 右側：動態景點看板 -->
         <section class="lg:col-span-5 space-y-6 lg:sticky lg:top-24 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto pr-1 w-full">
-            
-            <!-- 景點動態卡片 -->
             <div id="detail-card" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 max-lg:fixed max-lg:inset-0 max-lg:z-50 max-lg:hidden max-lg:overflow-y-auto max-lg:rounded-none max-lg:border-none">
                 
                 <!-- 手機版專屬頂部置頂返回列 -->
-                <div class="lg:hidden bg-slate-900 text-white px-4 py-3.5 sticky top-0 z-50 flex items-center justify-between shadow-sm select-none" onclick="closeMobileModal()">
+                <div class="lg:hidden bg-slate-900 text-white px-4 py-4 sticky top-0 z-50 flex items-center justify-between shadow-sm select-none cursor-pointer" onclick="closeMobileModal()">
                     <div class="flex items-center gap-2 text-sm font-bold text-sky-400 active:scale-95 transition">
                         <i class="fa-solid fa-chevron-left"></i> 返回時間軸線
                     </div>
                     <span class="text-xs font-mono font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded animate-pulse" id="mobile-panel-code">CODE</span>
                 </div>
 
-                <!-- [優化修復] 景點照片展示區：提示文字改為絕對定位，避免並排擠壓 -->
-                <div class="h-52 bg-slate-200 relative flex items-center justify-center overflow-hidden">
+                <!-- 景點照片展示區 -->
+                <div class="h-52 bg-slate-200 relative flex items-center justify-center overflow-hidden" id="panel-img-container">
                     <img id="panel-img" src="" alt="景點圖片" class="w-full h-full object-cover hidden">
-                    <div id="panel-img-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-slate-400 bg-slate-200 select-none">
+                    <div id="panel-img-placeholder" class="text-slate-400 flex flex-col items-center gap-2">
                         <i class="fa-regular fa-image text-4xl"></i>
                         <span class="text-xs">點擊左側行程查看實景照片與地圖</span>
                     </div>
@@ -222,7 +122,6 @@
                     <div id="taxi-copy-zone" class="bg-slate-900 text-white p-4 rounded-xl space-y-3 shadow-inner hidden">
                         <div class="flex items-center justify-between text-[10px] text-slate-400 font-medium tracking-wider uppercase">
                             <span><i class="fa-solid fa-taxi text-emerald-400 mr-1"></i> 顯示給司機看 ｜ Kakao T 複製區</span>
-                            <span class="text-slate-500">點擊文字區塊即可秒複製</span>
                         </div>
                         <div class="space-y-2">
                             <div onclick="copyToClipboard('panel-kor-name', this)" class="bg-slate-800/60 hover:bg-slate-800 p-2.5 rounded-lg border border-slate-700/50 cursor-pointer transition active:scale-[0.99]">
@@ -237,7 +136,7 @@
                     </div>
 
                     <!-- 時程與交通快速看板 -->
-                    <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl text-xs font-medium text-slate-600">
+                    <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl text-xs font-medium text-slate-600" id="info-board">
                         <div class="flex items-center gap-2">
                             <i class="fa-regular fa-hourglass-half text-sky-500 text-sm"></i>
                             <div>
@@ -254,12 +153,11 @@
                         </div>
                     </div>
                     
-                    <div class="text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3 min-h-[80px]" id="panel-desc">
-                        點擊左側時間軸上的任何一個行程項目，這裡將會即時顯示出該景點的親子攻略、注意事項、以及直達的導航地圖動線連結。
-                    </div>
+                    <!-- 核心動態內文注入區 -->
+                    <div class="text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-3 min-h-[80px]" id="panel-desc"></div>
 
-                    <!-- 地圖與導航按鈕 -->
-                    <div class="grid grid-cols-2 gap-3 pt-2">
+                    <!-- 地圖與導航按鈕容器 -->
+                    <div class="grid grid-cols-2 gap-3 pt-2" id="action-buttons-zone">
                         <a id="btn-naver" href="#" target="_blank" class="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl font-medium text-sm transition shadow-sm">
                             <i class="fa-solid fa-map-location-dot"></i> Naver 地點直達
                         </a>
@@ -276,61 +174,14 @@
                     <i class="fa-solid fa-circle-exclamation text-amber-600"></i> 行前重要備忘
                 </h4>
                 <ul class="text-xs text-amber-900/80 space-y-2 list-disc pl-4">
-                    <li><strong>照片命名秘訣</strong>：只需確保目錄下存在對應編號照片（如 <span class="font-mono bg-amber-100 px-1 rounded text-amber-800">D1-1.jpg</span>），系統將自動精準對齊，無 any 多餘代碼！</li>
+                    <li><strong>照片命名秘訣</strong>：只需確保目錄下存在對應編號照片（如 <span class="font-mono bg-amber-100 px-1 rounded text-amber-800">D1-1.jpg</span>），系統將自動精準對齊。</li>
                     <li><strong>地圖導航防呆</strong>：網頁右側按鈕支援當地 App 跳轉，地圖分頁別針可同時點擊看相對位置。</li>
                 </ul>
             </div>
-
-            <!-- 互動式行前點檢清單 -->
-            <div class="bg-slate-900 text-slate-100 rounded-2xl p-5 shadow-md border border-slate-800 space-y-4">
-                <h4 class="text-sm font-bold text-white flex items-center gap-2 tracking-wide border-b border-slate-800 pb-2">
-                    <i class="fa-solid fa-clipboard-check text-sky-400"></i> 🧳 兩週倒數：行前裝備與手持點檢
-                </h4>
-                <div class="space-y-3 text-xs">
-                    <div class="space-y-2">
-                        <span class="text-[10px] text-slate-400 font-bold tracking-wider uppercase block">📲 手機與數位服務確認</span>
-                        <label class="flex items-start gap-2.5 cursor-pointer group">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500 accent-sky-500">
-                            <span class="text-slate-300 group-hover:text-white transition">下載 <strong>Kakao T App</strong> 並綁定台灣信用卡（當地叫車救星）</span>
-                        </label>
-                        <label class="flex items-start gap-2.5 cursor-pointer group">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500 accent-sky-500">
-                            <span class="text-slate-300 group-hover:text-white transition">下載 <strong>Naver Map App</strong>（切換中文介面備用）</span>
-                        </label>
-                        <label class="flex items-start gap-2.5 cursor-pointer group">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500 accent-sky-500">
-                            <span class="text-slate-300 group-hover:text-white transition">確認小童平板有下載好 Family Link 授權之<strong>離線卡通電影</strong></span>
-                        </label>
-                    </div>
-                    <div class="space-y-2 border-t border-slate-800 pt-3">
-                        <span class="text-slate-400 font-bold block text-[11px] tracking-wide">🎒 景點客製化打包</span>
-                        <label class="flex items-start gap-2 cursor-pointer">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500">
-                            <span class="text-slate-300"><strong>D1 水樂園裝備</strong>：泳衣、泳帽、防水手機袋（現場玩漂漂河必備）</span>
-                        </label>
-                        <label class="flex items-start gap-2">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500">
-                            <span class="text-slate-300"><strong>D3 沙灘挖沙神物</strong>：帶小童折疊挖沙塑料鏟子與小水桶</span>
-                        </label>
-                        <label class="relative flex items-start gap-2">
-                            <input type="checkbox" class="mt-0.5 rounded border-slate-700 bg-slate-800 text-sky-500">
-                            <span class="text-slate-300"><strong>D4 雙腳保護</strong>：全家好走的耐磨球鞋（甘川洞全陡坡階梯禁推車）</span>
-                        </label>
-                    </div>
-                    <div class="space-y-2 border-t border-slate-700 pt-3">
-                        <span class="text-slate-400 font-bold block">🔌 技術與充電支援</span>
-                        <div class="text-slate-300 leading-relaxed pl-1 text-[11px]">
-                            • 帶高瓦數 GaN 2C1A 充電頭（Felix by STX 客廳極大，充手機、相機、行動電源很夠力）。<br>
-                            • 記得自備韓國專用轉接頭（4.8mm 粗雙圓頭）。
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </section>
     </main>
 
-    <!-- JavaScript 互動邏輯資料庫 -->
+    <!-- JavaScript 互動核心資料庫 -->
     <script>
         const itineraryData = {
             1: {
@@ -339,113 +190,53 @@
                 color: "#3b82f6", 
                 colorClass: "bg-blue-500",
                 events: [
-                    { code: "D1-1", lat: 35.1796, lng: 128.9382, time: "11:35", name: "抵達釜山金海機場", korName: "김해국제공항", korAddr: "부산 강서구 공항진입로 108", tag: "交通", duration: "50 分鐘", transit: "🚕 計程車約 45 分鐘", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://map.naver.com/p/search/김해국제공항" },
-                    { code: "D1-2", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台 Felix by STX 寄放行李", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "飯店", duration: "20 分鐘", transit: "🚶 步行約 3 分鐘", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
+                    { code: "D1-1", lat: 35.1796, lng: 128.9382, time: "11:35", name: "抵達釜山金海機場", korName: "김해국제공항", korAddr: "부산 강서구 공항진입로 108", tag: "交通", duration: "50 分鐘", transit: "🚕 計程車約 45 分鐘直達海雲台", desc: "降落金海國際機場，入境後推著行李推車直接前往計程車搭乘區。排隊搭乘排班大排計程車直奔海雲台飯店。", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://map.naver.com/p/search/김해국제공항" },
+                    { code: "D1-2", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台 Felix by STX 寄放行李", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "飯店", duration: "20 分鐘", transit: "🚶 步行約 3 分鐘", desc: "抵達位在海雲台地鐵站直通、生活機能絕佳的 Felix by STX 酒店。先將大件行李與推車寄放在櫃檯，即可輕鬆空手下樓到街上用餐與逛街。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
                     { code: "D1-3", lat: 35.1610, lng: 129.1595, time: "13:15", name: "海雲台市區悠閒午餐", korName: "해운대 구남로", korAddr: "부산 해운대구 우동", tag: "美食", duration: "1.5 小時", transit: "🚶 沿沙灘推車步行約 12 分鐘 (或 🚕 3分鐘)", desc: "就在飯店正下方的龜南路主街上享用道地且不辣的豬肉湯飯、海苔飯捲或傳統定食，為大人小孩補充滿滿體力。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://map.naver.com/p/search/해운대구남로" },
                     { code: "D1-4", lat: 35.1601, lng: 129.1672, time: "14:30", name: "Club D Oasis 水上樂園 ＆ 汗蒸幕", korName: "클럽디 오아시스", korAddr: "부산 해운대구 달맞이길 30", tag: "全家放電", duration: "4 小時", transit: "🚶 推車步行約 10 分鐘前往夏善家", desc: "全家一起前往就在海雲台沙灘旁 LCT 大樓的 Club D Oasis。這裡全家大小都可以一起進場！內部擁有海景無邊際泳池、室內外溫水水上樂園、漂漂河，以及頂級的高空汗蒸幕 SPA。太太享受大汗淋漓的汗蒸幕，爸爸帶寶貝衝水上滑梯放電，完美不分流！", google: "https://www.google.com/maps/search/?api=1&query=Club+D+Oasis+Busan", naver: "https://map.naver.com/p/entry/place/1609321752?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome" },
-                    { code: "D1-5", lat: 35.1603, lng: 129.1643, time: "19:00", name: "海雲台夏善家熟成烤肉 (Hasunzip)", korName: "하선집 해운대점", korAddr: "부산 해운대구 구남로24번길 11", tag: "美食", duration: "1.5 小時", transit: "🚶 步行約 8 分鐘返回飯店套房", desc: "【CatchTable 精選預訂】晚餐前往高質感烤肉名店「夏善家（Hasunzip）」。主打頂級熟成豬肉，最棒的是店員會提供「全程代烤剪肉服務」，不用自己動手烤！大人一邊舒適聊天、小孩一邊大口吃著香噴噴的肉塊和不辣的蒸蛋，水樂園放電後的最高規格補給！", google: "https://www.google.com/maps/search/?api=1&query=Hasunzip+Haeundae", naver: "https://map.naver.com/p/entry/place/1514595788?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome" }
+                    { code: "D1-5", lat: 35.1603, lng: 129.1643, time: "19:00", name: "海雲台夏善家熟成烤肉 (Hasunzip)", korName: "하선집 해운대점", korAddr: "부산 해운대구 구남로24번길 11", tag: "美食", duration: "1.5 小時", transit: "🚶 步行約 8 分鐘返回飯店套房", desc: "【CatchTable 精選預訂】晚餐前往高質感烤肉名店「夏善家（Hasunzip）」。主打頂級熟成豬肉，最棒的是店員會提供「全程代烤剪肉服務」，不用自己動手烤！大人一邊舒適聊天、小孩一邊大口吃著香噴噴的肉塊和不辣的蒸蛋，最高規格補給！", google: "https://www.google.com/maps/search/?api=1&query=Hasunzip+Haeundae", naver: "https://map.naver.com/p/entry/place/1514595788?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome" }
                 ]
             },
             2: {
-                title: "Day 2 ｜ 機張順向一日遊 ＆ 下午積木博物館",
+                title: "Day 2 ｜ 機張順向放電一日遊",
                 date: "7/23 (週四)",
                 color: "#10b981", 
                 colorClass: "bg-emerald-500",
                 events: [
-                    { code: "D2-1", lat: 35.1950, lng: 129.2272, time: "09:30", name: "Skyline Luge 斜坡滑車", korName: "스카이라인루지 부산", korAddr: "부산 기장군 기장읍 시랑리 350-1", tag: "玩樂", duration: "1.5 小時", transit: "🚕 計程車約 5 分鐘", desc: "早上出門第一站搭計程車直奔機張滑車場（人最少免排隊）。大人用 BIG 3 Pass 換票，現場幫四歲小童加購超便宜的「親子同乘票」。爸爸用胸膛環抱著孩子同乘一輛滑車，沿著山坡賽道滑下，極度刺激好玩！", google: "https://www.google.com/maps/search/?api=1&query=Skyline+Luge+Busan", naver: "https://map.naver.com/p/search/스카이라인루지+부산" },
-                    { code: "D2-2", lat: 35.1978, lng: 129.2301, time: "11:15", name: "機張頂級海景咖啡廳 ＆ 中餐", korName: "코랄라니", korAddr: "부산 기장군 기장읍 기장해안로 32", tag: "美景", duration: "2 小時", transit: "🚕 計程車約 5 分鐘", desc: "玩完滑車直接到位在隔壁附近的頂級度假海景咖啡廳（如 Coralani 或 Waveon）。此時正值中午烈日，剛好進入冷氣房內。大人躺在面向蔚藍大海的沙發椅上喝冠軍咖啡放空，順便享用精緻輕食與午餐。", google: "https://www.google.com/maps/search/?api=1&query=Coralani+Busan", naver: "https://map.naver.com/p/search/코랄라니" },
+                    { code: "D2-1", lat: 35.1950, lng: 129.2272, time: "09:30", name: "Skyline Luge 斜坡滑車", korName: "스카이라인루지 부산", korAddr: "부산 기장군 기장읍 시랑리 350-1", tag: "玩樂", duration: "1.5 小時", transit: "🚕 計程車約 5 分鐘", desc: "早上出門第一站搭計程車直奔機張滑車場。大人用 BIG 3 Pass 換票，現場幫四歲小童加購「親子同乘票」。爸爸用胸膛環抱著孩子同乘一輛滑車，沿著山坡賽道滑下，極度刺激好玩！", google: "https://www.google.com/maps/search/?api=1&query=Skyline+Luge+Busan", naver: "https://map.naver.com/p/search/스카이라인루지+부산" },
+                    { code: "D2-2", lat: 35.1978, lng: 129.2301, time: "11:15", name: "機張 Coralani 海景咖啡廳", korName: "코랄라니", korAddr: "부산 기장군 기장읍 기장해안로 32", tag: "美景", duration: "2 小時", transit: "🚕 計程車約 5 分鐘", desc: "玩完滑車直接到位在隔壁附近的頂級度假海景咖啡廳。正值中午烈日，剛好進入冷氣房內。大人躺在面向蔚藍大海的沙發椅上喝冠軍咖啡放空，順便享用精緻輕食與午餐。", google: "https://www.google.com/maps/search/?api=1&query=Coralani+Busan", naver: "https://map.naver.com/p/search/코랄라니" },
                     { code: "D2-3", lat: 35.1918, lng: 129.2166, time: "14:00", name: "機張積木博物館 (Brick Campus)", korName: "브릭캠퍼스 부산", korAddr: "부산 기장군 기장읍 동부산관광로 34", tag: "室內避暑", duration: "2 小時", transit: "🚕 計程車返回飯店休息艙 (約 25 分鐘)", desc: "下午兩點直奔同在 Osiria 園區內的積木校園博物館。全室內超強冷氣、全平路推車暢行無阻。裡面展示了世界頂級積木大師的壯觀作品，還有巨大的積木自由創作區、賽車道互動，孩子放電、大人躲太陽最完美！", google: "https://www.google.com/maps/search/?api=1&query=Brick+Campus+Busan", naver: "https://map.naver.com/p/search/브릭캠퍼스+부산" },
-                    { code: "D2-4", lat: 35.1631, lng: 129.1589, time: "16:30", name: "順向返回 Felix by STX 舒適休息", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "飯店", duration: "1.5 小時", transit: "🚕 搭計程車約 5-8 分鐘直達餐廳", desc: "行程一條龍完美收工，不走回頭路搭計程車返回海雲台飯店. Felix by STX 擁有非常寬敞的公寓式套房客廳，極度適合全家人在沙發彻底大字型躺平休息、在冷氣房吃下午茶點心，幫寶貝充飽電力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
-                    { code: "D2-5", lat: 35.1601, lng: 129.1655, time: "18:00", name: "Born & Bred The Steak House", korName: "본앤브레드 부산점", korAddr: "부산 해운대구 해운대해변로 298", tag: "美食", duration: "2.5 小時", transit: "今日行程結束，🚕 搭計程車約 5 分鐘秒回飯店大字型躺平", desc: "【頂級韓牛奢華預訂】晚上 18:00 準時前往位於海雲台核心奢華地段的 Born & Bred。享用享譽全韓的頂級韓牛與精緻牛排套餐，店內環境優雅、對親子極度友善。大人可以輕鬆品嚐極致美味，小孩也能大口吃著鮮嫩多汁的頂級牛肉，免去長途奔波與拉車，極度優雅舒適！", google: "https://www.google.com/maps/search/?api=1&query=Born+and+Bred+Busan", naver: "https://map.naver.com/p/search/본앤브레드+부산점" }
+                    { code: "D2-4", lat: 35.1631, lng: 129.1589, time: "16:30", name: "順向返回 Felix by STX 舒適補眠", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남ろ 9", tag: "飯店", duration: "1.5 小時", transit: "🚕 搭計程車約 5-8 分鐘直達餐廳", desc: "行程一條龍完美收工，搭計程車返回海雲台飯店。在套房客廳徹底大字型躺平休息，幫寶貝充飽電力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
+                    { code: "D2-5", lat: 35.1601, lng: 129.1655, time: "18:00", name: "Born & Bred The Steak House 韓牛", korName: "본앤브레드 부산점", korAddr: "부산 해운대구 해운대해변로 298", tag: "美食", duration: "2.5 小時", transit: "今日行程結束，返回飯店套房休息", desc: "【頂級韓牛奢華預訂】晚上 18:00 準時前往位於海雲台核心奢華地段的 Born & Bred。享用享譽全韓的頂級韓牛與精緻牛排套餐，店內環境優雅、對親子極度友善。大人輕鬆品味頂級奢華，寶貝吃得津津有味。", google: "https://www.google.com/maps/search/?api=1&query=Born+and+Bred+Busan", naver: "https://map.naver.com/p/search/본앤브레드+부산점" }
                 ]
             },
             3: {
-                title: "Day 3 ｜ 天空膠囊火車 ＆ 高空星巴克",
+                title: "Day 3 ｜ 天空膠囊火車 ➔ 海理團路 12 大名店踩點",
                 date: "7/24 (週五)",
                 color: "#a855f7", 
                 colorClass: "bg-purple-500",
                 events: [
-                    { code: "D3-1", lat: 35.1624, lng: 129.1914, time: "08:20", name: "抵達青沙浦平交道拍小火車", korName: "청사포 정거장", korAddr: "부산 해운대구 청사포로 116", tag: "美景", duration: "40 分鐘", transit: "🚶 步行約 2 分鐘進月台", desc: "提早搭計程車抵達「青沙浦站」。這時候觀光客最少、晨光最美，可以推著推車在經典的「平交道海景小火車」前拍出極具日系文青感的全家福大片。", google: "https://www.google.com/maps/search/?api=1&query=Cheongsapo+Station", naver: "https://map.naver.com/p/search/청사포+정거장" },
-                    { code: "D3-2", lat: 35.1598, lng: 129.1678, time: "09:00", name: "海雲台藍線公園天空膠囊列車", korName: "미포정거장", korAddr: "부산 해운대구 달맞이길62번길 13", tag: "必去", duration: "30 分鐘", transit: "🚶 出站推車步行約 3 分鐘", desc: "搭乘已預訂好的 09:00 繽紛獨立小火車（青沙浦 → 尾浦）。這條動線是「精準靠海側」，車速緩慢且空間獨立私密，四歲寶貝會當成好玩的遊樂設施，爸媽可以安心面向大海拍出絕美照片。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Blueline+Park+Mipo", naver: "https://map.naver.com/p/entry/place/1007574852?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome" },
-                    { code: "D3-3", lat: 35.1601, lng: 129.1672, time: "10:00", name: "釜山 X the Sky 100樓高空觀景台", korName: "부산 엑스더스카이", korAddr: "부산 해운대구 달맞이길 30", tag: "必去", duration: "2 小時", transit: "🚕 搭計程車約 5 分鐘回主街中餐", desc: "抵達尾浦站後，直接步行到隔壁的釜山最高摩天大樓（大人用 BIG 3 Pass 換票）。前往 99 樓的世界最高星巴克喝拿鐵、居高臨下俯瞰整條弧形海雲台沙灘，館內還設有豐富的 Baby Shark 多媒體互動區供小孩玩耍。", google: "https://www.google.com/maps/search/?api=1&query=Busan+X+the+Sky", naver: "https://map.naver.com/p/search/%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4/place/1328539259?c=15.00,0,0,0,dh&placePath=%2Fhome%3Fbk_query%3D%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4%26entry%3Dbmp%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202607192140%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4" },
-                    { code: "D3-4", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台市區中餐 ＆ 飯店家庭式午睡", korName: "펠릭斯 바이 STX", korAddr: "부산 해운대구 구남ろ 9", tag: "飯店", duration: "3.5 小時", transit: "【當下依體力任選下午平行行程，導航路線如下】", desc: "在尾浦附近 or 走回海雲台主街享用經典中餐。吃飽後步行回站前飯店，全家人在寬敞的冷氣套房好好大字型睡午覺補眠，調配小童體力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
-                    { code: "D3-5A", lat: 35.1587, lng: 129.1604, time: "16:00", name: "海雲台沙灘挖沙踏浪", korName: "해운대해수욕장", korAddr: "부산 해운대구 우동", tag: "彈性 A", duration: "2.5 小時", transit: "🚶 步行約 5 分鐘前往主街餐廳", desc: "【下午平行自由行程】從飯店推車散步到前方寬闊的沙灘上堆沙堡、赤腳踏浪。爸媽可以在陽傘下輕鬆吹著海風，享受最純粹的海雲台海濱度假風情。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Beach", naver: "https://map.naver.com/p/search/%ED%95%B4%EC%9A%B4%EB%8C%80%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5/place/11491806?c=15.00,0,0,0,dh&placePath=%3Fbk_query%253D%2525ED%252595%2525B4%2525EC%25259A%2525B4%2525EB%25258C%252580%2525ED%252595%2525B4%2525EC%252588%252598%2525EC%25259A%252595%2525EC%25259E%2525A5%2526entry%253Dbmp" },
-                    { code: "D3-5B", lat: 35.1608, lng: 129.1682, time: "16:00", name: "LCT Mall 高質感室內商場", korName: "해운대 엘시티", korAddr: "부산 해운대구 달맞이길 30", tag: "彈性 B", duration: "2.5 小時", transit: "🚕 搭計程車約 5 分鐘抵達主街餐廳", desc: "【下午平行自由行程】直接從 X the Sky 大樓低樓層開逛。室內冷氣開極強，動線極其寬敞好推車。裡面有許多極具質感、設計感的韓國在地選品店、服飾與文青海景咖啡廳。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+LCT", naver: "https://map.naver.com/p/search/해운대엘시티" },
-                    { code: "D3-5C", lat: 35.1650, lng: 129.1585, time: "16:00", name: "海理團路文青潮流散策", korName: "해리단길", korAddr: "부산 해운대구 우동 518", tag: "彈性 C", duration: "2.5 小時", transit: "🚶 穿過地下通道步行約 3 分鐘回餐廳", desc: "【下午平行自由行程】從飯店後方走路1分鐘即進駐。由老舊住宅重新改造成釜山現今最紅的設計街區，佈滿精緻文創雜貨、童裝小物、設計服飾與網美法式甜點店，極適合隨性尋寶。", google: "https://www.google.com/maps/search/?api=1&query=Haeridan-gil", naver: "https://map.naver.com/p/search/해리단길" },
-                    { code: "D3-6", lat: 35.1610, lng: 129.1595, time: "18:30", name: "晚餐享用海雲台在地特色美食", korName: "해운대 구남로", korAddr: "부산 해운대구 우동", tag: "美食", duration: "1.5 小時", transit: "今日行程結束", desc: "結束下午的悠閒任選行程，步行或就近在海雲台商圈尋找高人氣的釜山特色料理或不辣的暖胃湯飯，吃飽走路過馬路回房休息。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://map.naver.com/p/search/해운대구남로" }
+                    { code: "D3-1", lat: 35.1624, lng: 129.1914, time: "08:20", name: "青沙浦平交道拍海景火車", korName: "청사포 정거장", korAddr: "부산 해운대구 청사포로 116", tag: "美景", duration: "40 分鐘", transit: "🚶 步行約 2 分鐘進月台搭車", desc: "提早搭計程車抵達「青沙浦站」。這時候觀光客最少、晨光最美，可以推著推車在經典的「平交道海景小火車」前拍出極具日系文青感的全家福大片。", google: "https://www.google.com/maps/search/?api=1&query=Cheongsapo+Station", naver: "https://map.naver.com/p/search/청사포+정거장" },
+                    { code: "D3-2", lat: 35.1598, lng: 129.1678, time: "09:00", name: "海雲台藍線公園天空膠囊列車", korName: "미포정거장", korAddr: "부산 해운대구 달맞이길62번길 13", tag: "必去", duration: "30 分鐘", transit: "🚶 出站推車步行約 3 分鐘直達 LCT 大樓", desc: "搭乘已預訂好的 09:00 繽紛獨立小火車（青沙浦 → 尾浦）。這條動線是「精準靠海側」，車速緩慢且空間獨立私密，四歲寶貝會當成好玩的遊樂設施，爸媽可以安心面向大海拍出絕美照片。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Blueline+Park+Mipo", naver: "https://map.naver.com/p/entry/place/1007574852?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome" },
+                    { code: "D3-3", lat: 35.1601, lng: 129.1672, time: "10:00", name: "釜山 X the Sky 100樓高空觀景台", korName: "부산 엑스더스카이", korAddr: "부산 해운대구 달맞이길 30", tag: "必去", duration: "2 小時", transit: "🚕 搭計程車約 5 分鐘回主街中餐", desc: "前往 99 樓的世界最高星巴克喝拿鐵、居高臨下俯瞰整條弧形海雲台沙灘，館內還設有豐富的 Baby Shark 多媒體互動區供小孩玩耍。", google: "https://www.google.com/maps/search/?api=1&query=Busan+X+the+Sky", naver: "https://map.naver.com/p/search/%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4/place/1328539259?c=15.00,0,0,0,dh&placePath=%2Fhome%3Fbk_query%3D%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4%26entry%3Dbmp%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202607192140%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EB%B6%80%EC%82%B0%20%EC%97%91%EC%8A%A4%EB%8D%94%EC%8A%A4%EC%B9%B4%EC%9D%B4" },
+                    { code: "D3-4", lat: 35.1631, lng: 129.1589, time: "12:30", name: "海雲台市區中餐 ＆ 飯店套房午睡", korName: "펠릭斯 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "飯店", duration: "3.5 小時", transit: "【下單依全家體力解鎖下午平行宇宙行程】", desc: "在主街享用午餐。吃飽後步行回站前飯店，全家人在寬敞的冷氣套房好好睡午覺補眠，調配小童下午體力。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
+                    { code: "D3-5A", lat: 35.1587, lng: 129.1604, time: "16:00", name: "海雲台沙灘挖沙踏浪 (平行宇宙 A)", korName: "해운대해수욕장", korAddr: "부산 해운대구 우동", tag: "彈性 A", duration: "2.5 小時", transit: "🚶 步行返回主街街區", desc: "【下午平行自由行程】從飯店推車散步到前方寬闊的沙灘上堆沙堡、赤腳踏浪。爸媽可以在陽傘下輕鬆吹著海風，享受最純粹的海雲台海濱度假風情。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Beach", naver: "https://map.naver.com/p/search/%ED%95%B4%EC%9A%B4%EB%8C%80%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5/place/11491806?c=15.00,0,0,0,dh&placePath=%3Fbk_query%253D%2525ED%252595%2525B4%2525EC%25259A%2525B4%2525EB%25258C%252580%2525ED%252595%2525B4%2525EC%252588%252598%2525EC%25259A%252595%2525EC%25259E%2525A5%2526entry%253Dbmp" },
+                    { code: "D3-5B", lat: 35.1608, lng: 129.1682, time: "16:00", name: "LCT Mall 高質感室內商場 (平行宇宙 B)", korName: "해운대 엘시티", korAddr: "부산 해운대구 달맞이길 30", tag: "彈性 B", duration: "2.5 小時", transit: "🚕 搭計程車約 5 分鐘返回主街", desc: "【下午平行自由行程】直接從 X the Sky 大樓低樓層開逛。室內冷氣開極強，動線極其寬敞好推車。裡面有許多極具質感、設計感的韓國在地選品店、服飾與文青海景咖啡廳。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+LCT", naver: "https://map.naver.com/p/search/해운대엘시티" },
+                    { code: "D3-5C", lat: 35.1650, lng: 129.1585, time: "16:00", name: "海理團路文青潮流散策 (方案A街區特輯)", korName: "해리단길", korAddr: "부산 해운대구 우동 518", tag: "特輯 C", duration: "2.5 小時", transit: "🚶 穿過地下通道步行約 3 分鐘回主街餐館", desc: "OPTION_A_MARKER", google: "https://www.google.com/maps/search/?api=1&query=Haeridan-gil", naver: "https://map.naver.com/p/search/해리단길" },
+                    { code: "D3-6", lat: 35.1610, lng: 129.1595, time: "18:30", name: "海雲台主街老字號晚餐 ＆ 慢活散步", korName: "밀양순대돼지국밥", korAddr: "부산 해운대구 구남로 28", tag: "美食", duration: "1.5 小時", transit: "今日行程結束，散步回 Felix 酒店客廳躺平", desc: "結束下午的悠閒任選行程，步行或就近在海雲台商圈尋找高人氣的釜山特色料理（如 24 小時名店密陽血腸豬肉湯飯，不辣且濃郁暖胃）。", google: "https://www.google.com/maps/search/?api=1&query=Miryang+Sundae+Dwaeji-Gukbap+Haeundae", naver: "https://map.naver.com/p/search/밀양순대돼지국밥+해운대점" }
                 ]
             },
             4: {
-                title: "Day 4 ｜ 甘川手翻書彩色探險 ＆ 南浦洞尋寶 ＆ 廣安里無人機秀",
-                date: "7/25 (週火)",
-                color: "#ef4444", 
+                title: "Day 4 ｜ 甘川文化村彩色探險 ＆ 南浦洞代購挖寶 ＆ 廣安里無人機秀",
+                date: "7/25 (週六)",
+                color: "#ef4444",
                 colorClass: "bg-red-500",
                 events: [
-                    { code: "D4-1", lat: 35.0975, lng: 129.0093, time: "09:30", name: "甘川文化村 ｜ 小王子 ＆ 手翻書紀念製作（午餐於此）", korName: "감천문화마을", korAddr: "부산 사하구 감내2로 203", tag: "必去", duration: "3.5 小時", transit: "🚕 下山搭計程車約 12 分鐘", desc: "一早輕裝上山（不帶推車），優先前往熱門的「手翻書」店製作獨一無二的家族動態翻頁書，並與經典小王子雕像合影。11:30 左右，直接在村內的景觀餐廳坐下來享用不辣且甜美、寶貝最愛的韓式炸豬排午餐（或海苔飯捲），吹冷氣看山城全景，雙腳徹底休息。", google: "https://www.google.com/maps/search/?api=1&query=Gamcheon+Culture+Village", naver: "https://map.naver.com/p/search/%EA%B0%90%EC%B2%9C%EB%AC%B8%ED%99%94%EB%A7%88%EC%9D%84/place/21884707?c=15.00,0,0,0,dh&placePath=%3Fbk_query%253D%2525EA%2525B0%252590%2525EC%2525B2%25259C%2525EB%2525AC%2525B8%2525ED%252599%252594%2525EB%2525A7%252588%2525EC%25259D%252584%2526entry%253Dbmp" },
-                    { code: "D4-2", lat: 35.1010, lng: 129.0331, time: "13:15", name: "釜山電影體驗博物館 (Busan Museum of Movies)", korName: "부산영화체험박물관", korAddr: "부산 중구 대청로126번길 12", tag: "室內避暑", duration: "2 小時", transit: "🚶 出館推車直通地面光復路商圈", desc: "全室內定點避暑！動線極寬敞、推車完全通行。館內吹超強冷氣，帶寶貝體驗綠幕去背合成動態影片、錄音室互動、恐龍與 Baby Shark 多媒體影音區。2 小時的時間能讓寶貝玩得極度新鮮又不至於過度疲累。官方網頁：https://www.busanbom.kr/", google: "https://www.google.com/maps/search/?api=1&query=Busan+Museum+of+Movies", naver: "https://map.naver.com/p/search/부산영화체험박물관" },
-                    { code: "D4-3", lat: 35.0995, lng: 129.0300, time: "15:15", name: "南浦洞光復路商圈 ｜ 正韓獨立童裝巷弄挖寶", korName: "광복로 패ชั่น거리", korAddr: "부산 중구 광복동", tag: "親子血拼", duration: "2.5 小時", transit: "🚕 17:45 叫計程車直奔廣安里 (車程約 30-40 分鐘，寶貝可在車上睡午覺補眠)", desc: `
-                        <p class="mb-4 font-medium text-slate-700">從博物館下樓直接進入南浦洞核心平路街區，<strong>推車全面解鎖！</strong> 太太與先生最愛的「巷弄挖寶」探險正式開始！主攻與傳統市場交界的小街，入手高 CP 值、充滿設計感的正韓空運小童衣物，累了還能隨時進雪冰咖啡廳吹冷氣充電。</p>
-                        
-                        <!-- 全新重構：微縮實戰互動街區圖（已整合全線 100% 精準實實測連結） -->
-                        <div class="bg-slate-900 text-white rounded-xl p-4 my-3 text-xs shadow-md select-none border border-slate-800 space-y-3">
-                            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-                                <span class="font-bold text-sky-400 flex items-center gap-1.5"><i class="fa-solid fa-map-marked-alt"></i> 南浦洞「巷弄挖寶」實戰微地圖</span>
-                                <span class="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">🧭 手持對齊即可看清方位</span>
-                            </div>
-                            
-                            <div class="space-y-2 text-center">
-                                <!-- 北側起點 -->
-                                <div class="text-slate-500 text-[10px] tracking-widest uppercase">▲ 北側（往山坡/龍頭山公園）</div>
-                                <div class="bg-slate-800/80 p-2 rounded-lg border border-slate-700/50 text-slate-300 font-medium">
-                                    🎬 起點：電影體驗博物館 (부산영화체험박물관)
-                                </div>
-                                
-                                <div class="py-1"><i class="fa-solid fa-arrow-down text-slate-600 animate-pulse"></i></div>
-                                
-                                <!-- 東西向主街 (整合實測主街連結) -->
-                                <a href="https://map.naver.com/p/entry/place/490540483?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192152%26locale%3Dko%26svcName%3Dmap_pcv5" target="_blank" class="block bg-gradient-to-r from-sky-900 to-indigo-900 hover:from-sky-850 hover:to-indigo-850 p-2.5 rounded-lg border border-sky-800 font-bold tracking-wide text-sky-200 transition active:scale-95 flex items-center justify-center gap-1">
-                                    <span>🌟 光復路時尚主街 (광복로 패ชั่น거리)</span>
-                                    <i class="fa-solid fa-square-arrow-up-right text-[10px] text-sky-400"></i>
-                                </a>
-                                
-                                <!-- 東西兩側分流 (傳統市場挖寶區) -->
-                                <div class="grid grid-cols-2 gap-2 pt-1">
-                                    <a href="https://map.naver.com/p/search/국제시장" target="_blank" class="bg-slate-800 hover:bg-slate-750 p-2.5 rounded-lg border border-slate-700/85 text-left transition transform active:scale-95 flex flex-col justify-between min-h-[90px]">
-                                        <div>
-                                            <span class="font-bold text-amber-400 block"><i class="fa-solid fa-store mr-1"></i> 🧸 國際市場</span>
-                                            <span class="text-[10px] text-slate-400 block mt-1 leading-normal">【手持面向：左手邊】藏著大量文具與玩具批發行。</span>
-                                        </div>
-                                        <span class="text-[9px] text-sky-400 font-bold self-end mt-2 flex items-center gap-0.5">Naver 導航 <i class="fa-solid fa-angle-right"></i></span>
-                                    </a>
-                                    
-                                    <a href="https://map.naver.com/p/search/아리랑거리" target="_blank" class="bg-slate-800 hover:bg-slate-750 p-2.5 rounded-lg border border-slate-700/85 text-left transition transform active:scale-95 flex flex-col justify-between min-h-[90px]">
-                                        <div>
-                                            <span class="font-bold text-emerald-400 block"><i class="fa-solid fa-shirt mr-1"></i> 🦖 阿里郎街</span>
-                                            <span class="text-[10px] text-slate-400 block mt-1 leading-normal">【手持面向：右前方】★平價童裝一條街★ 密集的獨立小鋪！</span>
-                                        </div>
-                                        <span class="text-[9px] text-sky-400 font-bold self-end mt-2 flex items-center gap-0.5">Naver 導航 <i class="fa-solid fa-angle-right"></i></span>
-                                    </a>
-                                </div>
-
-                                <div class="py-1"><i class="fa-solid fa-arrow-down text-slate-600"></i></div>
-
-                                <!-- 南側終點 -->
-                                <div class="grid grid-cols-2 gap-2">
-                                    <a href="https://map.naver.com/p/search/BIFF%EA%B4%91%EC%9E%A5/place/2075998544?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D2%26timestamp%3D202607192149%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3DBIFF%EA%B4%91%EC%9E%A5" target="_blank" class="bg-slate-800 hover:bg-slate-750 p-2 rounded-lg border border-slate-700 text-slate-300 font-medium transition flex items-center justify-between active:scale-95">
-                                        <span>🥞 BIFF 廣場 (黑糖餅)</span>
-                                        <i class="fa-solid fa-location-arrow text-[10px] text-amber-400"></i>
-                                    </a>
-                                    <a href="https://map.naver.com/p/search/%EB%A1%AF%EB%8D%B0%EB%B0%B1%ED%99%94%EC%A0%90+%EA%B4%91%EB%B3%B5%EC%A0%90/place/13291279?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%3Fbk_query%253D%2525EB%2525A1%2525AF%2525EB%25258D%2525B0%2525EB%2525B0%2525B1%2525ED%252599%252594%2525EC%2525A0%252590%252520%2525EA%2525B4%252591%2525EB%2525B3%2525B5%2525EC%2525A0%252590%2526entry%253Dbmp" target="_blank" class="bg-slate-800 hover:bg-slate-750 p-2 rounded-lg border border-slate-700 text-slate-300 font-medium transition flex items-center justify-between active:scale-95">
-                                        <span>🛍️ 樂天百貨 (終點叫車)</span>
-                                        <i class="fa-solid fa-location-arrow text-[10px] text-sky-400"></i>
-                                    </a>
-                                </div>
-                                <div class="text-slate-600 text-[10px] tracking-widest uppercase pt-1">▼ 南側（往地鐵站 / 札嘎其海邊）</div>
-                            </div>
-                        </div>
-                    `, google: "https://www.google.com/maps/search/?api=1&query=Nampodong+Shopping+Street", naver: "https://map.naver.com/p/entry/place/490540483?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192152%26locale%3Dko%26svcName%3Dmap_pcv5" },
-                    { code: "D4-4", lat: 35.1532, lng: 129.1189, time: "18:30", name: "廣安里海灘 ｜ 現場覓食特色晚餐", korName: "광안리해수욕장", korAddr: "부산 수영구 광안해변로 219", tag: "開胃美食", duration: "1.5 小時", transit: "🚶 飽餐後推車步行至沙灘第一排卡位", desc: "計程車下車抵達廣安里海邊。採取最靈活的在地化策略，直接在海灘主街後方的巷弄現場找一家免排隊、順眼的在地餐館（如溫暖不辣的刀切麵、海苔飯捲或傳統定食）簡單快速用餐，大人小孩都能輕鬆吃飽，免去窗邊卡位壓力！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://map.naver.com/p/search/광안리해수욕장" },
-                    { code: "D4-5", lat: 35.1532, lng: 129.1189, time: "20:00", name: "廣安里大橋 ｜ 獨立時間軸 20:00 震撼無人機秀", korName: "광안리해수욕장 백사장", korAddr: "부산 수영구 광안해변로 219 (백사장 전面)", tag: "高潮行程", duration: "15 分鐘", transit: "活動結束，遠離散場核心區 🚕 搭計程車約 20 分鐘回海雲台飯店", desc: "【重要時間節點！千萬別錯過！】提前於 19:45 移步到廣安里沙灘前線卡位。晚上 20:00 整，夜空中將準時上演全釜山最震撼的璀璨無人機燈光秀！在浪漫的海風與現場配樂下，全家一同親身仰望奇景，四歲寶貝絕對會看著夜空驚呼連連，留下此行最純粹的高潮回憶！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://map.naver.com/p/search/광안리해수욕장" }
+                    { code: "D4-1", lat: 35.0975, lng: 129.0093, time: "09:30", name: "甘川文化村 ｜ 小王子彩色山城探險", korName: "감천문화마을", korAddr: "부산 사하구 감내2로 203", tag: "必去", duration: "3.5 小時", transit: "🚕 下山搭計程車約 12 分鐘直達電影館", desc: "一早輕裝上山（不帶推車），優先前往熱門的「手翻書」店製作獨一無二的家族動態翻頁書，並與經典小王子雕像合影。11:30 左右，直接在村內的景觀餐廳坐下來享用不辣且甜美、寶貝最愛的韓式炸豬排午餐（或海苔飯捲），吹冷氣看山城全景，雙腳徹底休息。", google: "https://www.google.com/maps/search/?api=1&query=Gamcheon+Culture+Village", naver: "https://map.naver.com/p/search/%EA%B0%90%EC%B2%9C%EB%AC%B8%ED%99%94%EB%A7%88%EC%9D%84/place/21884707?c=15.00,0,0,0,dh&placePath=%3Fbk_query%253D%2525EA%2525B0%252590%2525EC%2525B2%25259C%2525EB%2525AC%2525B8%2525ED%252599%252594%2525EB%2525A7%252588%2525EC%25259D%252584%2526entry%253Dbmp" },
+                    { code: "D4-2", lat: 35.1010, lng: 129.0331, time: "13:15", name: "釜山電影體驗博物館 (室內極致強冷)", korName: "부산영화체험박물관", korAddr: "부산 中구 대청로126번길 12", tag: "室內避暑", duration: "2 小時", transit: "🚶 出館推車平路直通地面光復路商圈", desc: "全室內定點避暑！動線極寬敞、推車完全通行。館內吹超強冷氣，帶寶貝體驗綠幕去背合成動態影片、錄音室互動、恐龍與 Baby Shark 多媒體影音區。2 小時的時間能讓寶貝玩得極度新鮮又不至於過度疲累。官方網頁：https://www.busanbom.kr/", google: "https://www.google.com/maps/search/?api=1&query=Busan+Museum+of+Movies", naver: "https://map.naver.com/p/search/부산영화체험박물관" },
+                    { code: "D4-3", lat: 35.0995, lng: 129.0300, time: "15:15", name: "南浦洞光復路商圈 ｜ 正韓獨立童裝巷弄挖寶", korName: "광복로 패ชั่น거리", korAddr: "부산 중구 광복동", tag: "親子血拼", duration: "2.5 小時", transit: "🚕 17:45 叫計程車直奔廣安里 (車程約 30-40 分鐘，寶貝可在車上睡午覺補眠)", desc: "OPTION_B_MARKER", google: "https://www.google.com/maps/search/?api=1&query=Nampodong+Shopping+Street", naver: "https://map.naver.com/p/search/광복로+패ชั่น거리" },
+                    { code: "D4-4", lat: 35.1532, lng: 129.1189, time: "18:30", name: "廣安里海灘 ｜ 現場覓食特色晚餐", korName: "광안리해수욕장", korAddr: "부산 수영구 광안해변로 219", tag: "開胃美食", duration: "1.5 小時", transit: "🚶 飽餐後推車步行至沙灘第一排卡位", desc: "計程車下車抵達廣安里海邊。採取最靈活的在地化策略，直接在海灘主街後方的巷弄現場找一家免排隊、順眼的在地餐館（如溫暖不辣的刀切麵、海苔飯捲或傳統定食）簡單快速用餐，外國客點餐零隔閡！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://map.naver.com/p/search/광안리해수욕장" },
+                    { code: "D4-5", lat: 35.1532, lng: 129.1189, time: "20:00", name: "廣安里大橋 ｜ 獨立時間軸 20:00 震撼無人機秀", korName: "광안리해수욕장 백사장", korAddr: "부산 수영구 광안해변로 219 (백사장 전面)", tag: "高潮行程", duration: "15 分鐘", transit: "活動結束，遠離散場核心區 🚕 搭計程車約 20 分鐘秒回海雲台 Felix 飯店休息", desc: "【重要時間節點！千萬別錯過！】提前於 19:45 移步到廣安里沙灘前線卡位。晚上 20:00 整，夜空中將準時上演全釜山最震撼的璀璨無人機燈光秀！在浪漫的海風與現場配樂下，全家一同親身仰望奇景，四歲寶貝絕對會看著夜空驚呼連連，留下此行最純粹的高潮回憶！", google: "https://www.google.com/maps/search/?api=1&query=Gwangalli+Beach", naver: "https://map.naver.com/p/search/광안리해수욕장" }
                 ]
             },
             5: {
@@ -455,10 +246,26 @@
                 colorClass: "bg-orange-500",
                 events: [
                     { code: "D5-1", lat: 35.1610, lng: 129.1595, time: "08:30", name: "海雲台主街優雅早餐", korName: "해운대 구남로", korAddr: "부산 해운대구 우동", tag: "美食", duration: "1 小時", transit: "🚶 步行約 3 分鐘回飯店取行李退房", desc: "在飯店周邊的文青早餐店、特色烘焙麵包店或咖啡廳享用最後的慢活早餐，拍拍照、整理戰利品。", google: "https://www.google.com/maps/search/?api=1&query=Haeundae+Gunam-ro", naver: "https://map.naver.com/p/search/해운대+구남로" },
-                    { code: "D5-2", lat: 35.1631, lng: 129.1589, time: "09:45", name: "辦理退房 ｜ 計程車直奔機場", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "交通", duration: "45 分鐘", transit: "🛫 進入金海機場出境辦理大廳", desc: "辦理 Check-out 退房，行李下樓直接上計程車（地鐵站前叫車極方便）。將所有行李與四歲小童安全送上車，一路優雅直達金海機場。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
+                    { code: "D5-2", lat: 35.1631, lng: 129.1589, time: "09:45", name: "辦理退房 ｜ 計程車直奔機場", korName: "펠릭스 바이 STX", korAddr: "부산 해운대구 구남로 9", tag: "交通", duration: "45 分鐘", transit: "🛫 進入金海機場出境辦理大廳", desc: "辦理 Check-out 退房，行李下樓直接上計程車（地鐵站前叫車極方便）。將所有行李與四歲小童安全送上車，一條龍優雅直達金海機場。", google: "https://www.google.com/maps/search/?api=1&query=Felix+by+STX+Hotel+Busan", naver: "https://map.naver.com/p/entry/place/1663867054?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192135%26locale%3Dko%26svcName%3Dmap_pcv5%26businessCategory%3Dhotel" },
                     { code: "D5-3", lat: 35.1796, lng: 128.9382, time: "12:45", name: "搭乘長榮航空 BR1193 返台", korName: "김해국제공항", korAddr: "부산 강서구 공항진입로 108", tag: "航班", desc: "於機場免稅店進行最後補貨。12:45 搭乘長榮航空 BR1193 班機返回台北，於 14:10 抵達桃園國際機場，帶回滿滿精美照片完美結束假期！", google: "https://www.google.com/maps/search/?api=1&query=Gimhae+International+Airport", naver: "https://map.naver.com/p/search/김해국제공항" }
                 ]
             }
+        };
+
+        // 方案 A 專屬 12 大指標店面微觀地圖資料庫
+        const haeridanShops = {
+            "H-1": { name: "Busan Bada Sand", type: "gift", korName: "부산바다샌드", naver: "https://map.naver.com/p/search/부산바다샌드", desc: "近年在釜山竄紅的超人氣奶油三明治餅乾專專賣店。極具設計感且 festive 氛圍的可愛黃色小屋，門口巨大的招牌白色小熊是海理團路最知名的拍照打卡熱點。口味類似東京經典點心的蜂蜜奶油夾心，常溫保存一週。" },
+            "H-2": { name: "Keveren House", type: "gift", korName: "케버린하우스", naver: "https://map.naver.com/p/search/케버린하우스", desc: "社群平台上非常熱門的法式酥餅外帶伴手禮店。招牌必買經典的「Busan Butter Pie」奶油派，口感極為酥脆且層次分明。每盒皆會附贈一罐肉桂蘋果醬，搭配品嚐香甜且味道更加豐富。" },
+            "H-3": { name: "LUFT MANSION", type: "shop", korName: "루프트맨ชั่น", naver: "https://map.naver.com/p/search/루프트맨ชั่น", desc: "隱藏在海理團路舊公寓大樓二樓的文青質感風格選物店。熱門選物以富有設計感的質感馬克杯、彩色字體帆布袋及潮流服飾為主。位置較為隱密，走上二樓即可看到。" },
+            "H-4": { name: "the orleans store", type: "shop", korName: "디오를레앙스", naver: "https://map.naver.com/p/search/디오를레앙스", desc: "隱藏在巷弄轉角、必須沿著入口走入地下一樓（B1F）的質感古著服飾專賣店。店內空間寬敞，冷氣設備極為舒適，提供一個能在炎熱午後好好放鬆挖寶的隱密空間。" },
+            "H-5": { name: "Hippie Mond Living", type: "shop", korName: "히피몬드 리빙", naver: "https://map.naver.com/p/search/히피몬드리빙", desc: "外觀採用吸睛亮橘紅色調的可愛文創小物與生活雜貨店。各種韓系插畫風的文創周邊、生活雜貨與趣味小擺飾。充滿童趣色彩的獨特店面外牆本身就是一個極佳的街拍背景。" },
+            "H-6": { name: "DUPLIT", type: "cafe", korName: "듀플릿", naver: "https://map.naver.com/p/search/듀플릿", desc: "裝潢洋溢著熱烈夏威夷度假風情的網紅咖啡廳。若想嘗試隔壁 Keveren House 的人氣 Butter Pie 又不想購買一整盒盒裝，可在本咖啡廳內享用單點品嚐服務。島嶼風裝潢有身處異國海島的悠閒感。" },
+            "H-7": { name: "Raw & Sweet", type: "cafe", korName: "로우앤스윗", naver: "https://map.naver.com/p/search/로우앤스윗", desc: "廣受好評、散發著慵懶法式氛圍感的超人氣咖啡廳。招牌必點香醇的招牌手沖咖啡以及備受推崇的西點麵包（如金黃可頌）。露天座位極佳，是精緻下午茶的完美選擇。" },
+            "H-8": { name: "Deep Flow Roastery", type: "cafe", korName: "딥플로우커피", naver: "https://map.naver.com/p/search/딥플로우커피", desc: "在各大旅遊平台都擁有極高聲譽的自家烘焙手沖咖啡廳。店家對咖啡豆的烘焙與沖煮工藝十分講究，提供多款店家親自精選並自家烘焙的高品質精品咖啡豆。步調安靜。" },
+            "H-9": { name: "Taiga Tempura", type: "food", korName: "타이가텐푸라", naver: "https://map.naver.com/p/search/타이가텐푸라", desc: "常年大排長龍的高人氣日式天丼（天婦羅蓋飯）專賣店。現點現炸、外皮金黃酥脆且內裡飽滿多汁的豪華天婦羅蓋飯。由於人氣極高，建議在用餐尖峰時間前提早前往登記候位。" },
+            "H-10": { name: "GoGotacos", type: "food", korName: "고고타코스", naver: "https://map.naver.com/p/search/고고타코스", desc: "風格強烈、主打精緻墨西哥風味料理的街邊特色小餐館。招牌推薦莎莎醬玉米餅，大份量的脆餅上鋪滿新鮮莎莎醬、濃郁酪梨醬與手撕肉。支援自動刷卡機且附清晰照片，點餐零隔閡。" },
+            "H-11": { name: "紅辣炒年糕 (빨간떡볶이)", type: "food", korName: "빨간떡볶이", naver: "https://map.naver.com/p/search/빨간떡볶이", desc: "傳統在地老字號辣炒年糕店。年糕外層軟糯、口感極具神級嚼勁，裹上紅亮濃郁、帶有微甜滋味的特製完全不辣醬汁！每逢週三與週日固定休息。" },
+            "H-12": { name: "密陽血腸豬肉湯飯", type: "food", korName: "밀양순대돼지국밥 해운대점", naver: "https://map.naver.com/p/search/밀양순대돼지국밥+해운대점", desc: "坐落於繁華海雲台大街上的老字號豬肉湯飯名店。湯頭燉煮得極為濃郁香醇，搭配肥嫩適中的豬肉切片或血腸。24小時營業不打烊，不論當作散步補給、早餐還是宵夜都非常適合。" }
         };
 
         let currentDay = 1;
@@ -531,7 +338,7 @@
             itineraryData[dayNum].events.forEach((event, index) => {
                 const item = document.createElement('div');
                 let borderStyle = "border-slate-100 hover:border-sky-200 bg-slate-50/50 hover:bg-sky-50/30";
-                if(event.tag.includes("彈性") || event.tag.includes("在地") || event.tag.includes("高潮")) {
+                if(event.tag.includes("彈性") || event.tag.includes("在地") || event.tag.includes("特輯")) {
                     borderStyle = "border-amber-100 hover:border-amber-300 bg-amber-50/10 hover:bg-amber-50/40";
                 }
 
@@ -539,7 +346,7 @@
                 item.onclick = () => updatePanel(event, false);
 
                 let dotColor = "border-sky-500 group-hover:bg-sky-500";
-                if(event.tag.includes("彈性") || event.tag.includes("在地") || event.tag.includes("高潮")) {
+                if(event.tag.includes("彈性") || event.tag.includes("在地") || event.tag.includes("特輯")) {
                     dotColor = "border-amber-500 group-hover:bg-amber-500";
                 }
 
@@ -548,7 +355,7 @@
                     <div class="flex justify-between items-start gap-4">
                         <div class="space-y-1">
                             <div class="flex items-center gap-2">
-                                <span class="text-sm font-mono font-bold ${event.tag.includes("彈性") || event.tag.includes("在地") ? 'text-amber-600 bg-amber-50' : 'text-sky-600 bg-sky-50'} px-2 py-0.5 rounded-md">${event.time}</span>
+                                <span class="text-sm font-mono font-bold ${event.tag.includes("彈性") || event.tag.includes("特輯") ? 'text-amber-600 bg-amber-50' : 'text-sky-600 bg-sky-50'} px-2 py-0.5 rounded-md">${event.time}</span>
                                 <span class="text-xs font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${event.code}</span>
                                 <span class="text-xs font-medium text-slate-400"><i class="fa-regular fa-clock scale-90"></i> 留 ${event.duration || "自訂"}</span>
                             </div>
@@ -628,34 +435,50 @@
             }
         }
 
+        // [完美修復防護牆] 面板動態渲染與強固式特殊景點攔截器
         function updatePanel(event, isInitialLoad = false) {
             if (!event) return;
-            document.getElementById('panel-title').innerHTML = `<span class="text-slate-400 font-mono mr-2">[${event.code || ''}]</span>${event.name || ''}`;
-            document.getElementById('panel-time').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> 預計時間 ｜ ${event.time || ''}`;
-            document.getElementById('panel-desc').innerHTML = event.desc || "";
-            document.getElementById('panel-tag').innerText = event.code || "";
+            
+            const descZone = document.getElementById('panel-desc');
+            const actionButtonsZone = document.getElementById('action-buttons-zone');
+            const taxiZone = document.getElementById('taxi-copy-zone');
+            const transitCont = document.getElementById('transit-container');
+            const imgContainer = document.getElementById('panel-img-container');
+
+            if (document.getElementById('panel-title')) {
+                document.getElementById('panel-title').innerHTML = `<span class="text-slate-400 font-mono mr-2">[${event.code || ''}]</span>${event.name || ''}`;
+            }
+            if (document.getElementById('panel-time')) {
+                document.getElementById('panel-time').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> 預計時間 ｜ ${event.time || ''}`;
+            }
+            if (document.getElementById('panel-duration')) {
+                document.getElementById('panel-duration').innerText = event.duration || "看心情彈性調整";
+            }
+            if (document.getElementById('panel-tag')) {
+                document.getElementById('panel-tag').innerText = event.code || "";
+            }
             
             const mobileCode = document.getElementById('mobile-panel-code');
             if (mobileCode) mobileCode.innerText = event.code || "";
-            
-            document.getElementById('panel-duration').innerText = event.duration || "看心情彈性調整";
-            
-            const transitCont = document.getElementById('transit-container');
-            const panelTransit = document.getElementById('panel-transit');
-            if (event.transit) {
-                if (transitCont) transitCont.classList.remove('hidden');
+
+            // 1. 交通工具顯示邏輯常態防護閘門 (徹底根除 undefined)
+            if (event.transit && transitCont) {
+                transitCont.classList.remove('hidden');
+                const panelTransit = document.getElementById('panel-transit');
                 if (panelTransit) panelTransit.innerText = event.transit;
-            } else {
-                if (transitCont) transitCont.classList.add('hidden');
+            } else if (transitCont) {
+                transitCont.classList.add('hidden');
             }
 
-            const taxiZone = document.getElementById('taxi-copy-zone');
-            if (event.korName && event.korAddr) {
-                document.getElementById('panel-kor-name').innerText = event.korName;
-                document.getElementById('panel-kor-addr').innerText = event.korAddr;
-                if (taxiZone) taxiZone.classList.remove('hidden');
-            } else {
-                if (taxiZone) taxiZone.classList.add('hidden');
+            // 2. 叫車複製區常態防護閘門
+            if (event.korName && event.korAddr && taxiZone) {
+                const pkName = document.getElementById('panel-kor-name');
+                const pkAddr = document.getElementById('panel-kor-addr');
+                if (pkName) pkName.innerText = event.korName;
+                if (pkAddr) pkAddr.innerText = event.korAddr;
+                taxiZone.classList.remove('hidden');
+            } else if (taxiZone) {
+                taxiZone.classList.add('hidden');
             }
 
             const btnNaver = document.getElementById('btn-naver');
@@ -663,50 +486,236 @@
             if (btnNaver) btnNaver.href = event.naver || "#";
             if (btnGoogle) btnGoogle.href = event.google || "#";
 
-            const imgElement = document.getElementById('panel-img');
-            const placeholder = document.getElementById('panel-img-placeholder');
-            
-            if (imgElement) {
-                // 每當切換行程時，先將圖片隱藏，並將絕對定位的提示文字顯現
-                imgElement.classList.add('hidden');
-                if (placeholder) placeholder.classList.remove('hidden');
+            // 3. 核心內容特殊條件分支安全攔截 (防止 Null Object 崩潰)
+            if (event.code === "D3-5C") {
+                // 【方案 A 核心解鎖：海理團路 12 大指標店面微觀互動街區特輯】
+                if (imgContainer) imgContainer.classList.add('hidden');
+                if (taxiZone) taxiZone.classList.add('hidden');
+                if (actionButtonsZone) actionButtonsZone.classList.add('hidden');
                 
-                imgElement.src = `${event.code}.jpg`;
+                if (descZone) {
+                    descZone.innerHTML = `
+                        <div class="space-y-4">
+                            <p class="text-slate-700 leading-relaxed font-medium">恭喜解鎖海理團路巷弄探索！點選下方地圖上的任何指標店家，即可一鍵秒讀特色攻略，並可直接導航直達。</p>
+                            
+                            <!-- 視覺實戰互動街區地圖（精確還原方位感與路名） -->
+                            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs font-sans text-slate-300 relative shadow-inner">
+                                <div class="text-center text-[10px] text-slate-500 tracking-widest mb-3 uppercase">▲ 北側（往高架鐵道舊址）</div>
+                                
+                                <!-- 橫向街道：Udong 1-ro -->
+                                <div class="border-b border-dashed border-slate-700 pb-2 text-center text-[9px] font-mono text-slate-500 tracking-wider">--- Udong 1-ro ---</div>
+                                
+                                <div class="grid grid-cols-3 gap-2 my-2.5">
+                                    <button onclick="selectHaeridanShop('H-10')" class="bg-slate-800/90 hover:bg-orange-900/40 p-2 rounded border border-slate-700 text-center transition active:scale-95">
+                                        🌮 GoGotacos
+                                    </button>
+                                    <button onclick="selectHaeridanShop('H-4')" class="bg-slate-800/90 hover:bg-emerald-900/40 p-2 rounded border border-slate-700 text-center transition active:scale-95">
+                                        🛍️ the orleans
+                                    </button>
+                                    <div class="bg-slate-800/20 rounded border border-dashed border-slate-800/60 flex items-center justify-center text-[9px] text-slate-600">
+                                        住宅區
+                                    </div>
+                                </div>
+
+                                <!-- 斜向核心主幹道：Udong 1-ro 38beon-gil -->
+                                <div class="bg-slate-400 text-slate-900 py-1 my-2 text-center rounded font-mono text-[9px] tracking-widest transform -rotate-2 font-bold">
+                                    ➔ ➔ Udong 1-ro 38beon-gil (潮流核心主街) ➔ ➔
+                                </div>
+
+                                <div class="grid grid-cols-4 gap-1.5 my-2">
+                                    <div class="col-span-1"></div>
+                                    <button onclick="selectHaeridanShop('H-3')" class="bg-slate-800 hover:bg-indigo-900/40 p-1.5 rounded border border-slate-700 text-center text-[10px] truncate transition">
+                                        🎀 LUFT
+                                    </button>
+                                    <button onclick="selectHaeridanShop('H-9')" class="bg-slate-800 hover:bg-amber-900/40 p-1.5 rounded border border-slate-700 text-center text-[10px] truncate transition">
+                                        🍤 Taiga
+                                    </button>
+                                    <div class="col-span-1"></div>
+                                </div>
+
+                                <!-- 縱向精華巷弄：Udong 1-ro 20beon-gil (店家最密集集中地) -->
+                                <div class="border-l border-dashed border-slate-700 pl-2 my-2 text-[9px] font-mono text-slate-500">
+                                    ⬇ Udong 1-ro 20beon-gil
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div class="space-y-1.5">
+                                        <button onclick="selectHaeridanShop('H-5')" class="w-full bg-slate-800 hover:bg-sky-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            🧸 可愛文創選物：히피몬드 리빙
+                                        </button>
+                                        <button onclick="selectHaeridanShop('H-8')" class="w-full bg-slate-800 hover:bg-sky-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            ☕ 專業自家烘焙：딥플로우커피
+                                        </button>
+                                        <button onclick="selectHaeridanShop('H-2')" class="w-full bg-slate-800 hover:bg-sky-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            🍞 外帶酥脆奶油派：케버린하우스
+                                        </button>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <button onclick="selectHaeridanShop('H-7')" class="w-full bg-slate-800 hover:bg-purple-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            ☕ 法式慵懶浪漫：로우앤스윗
+                                        </button>
+                                        <button onclick="selectHaeridanShop('H-6')" class="w-full bg-slate-800 hover:bg-purple-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            🍹 度假島嶼風下午茶：듀플릿
+                                        </button>
+                                        <button onclick="selectHaeridanShop('H-1')" class="w-full bg-slate-800 hover:bg-purple-900/40 p-2 rounded border border-slate-700 text-left transition text-[11px]">
+                                            🎁 黃色小屋三明治：부산바다샌드
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 南側外圍捷運主街區 -->
+                                <div class="border-t border-dashed border-slate-700 mt-3 pt-2 text-center text-[9px] font-mono text-slate-500">--- 外圍主幹道 / 往海雲台地鐵站 站前大街 ---</div>
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <button onclick="selectHaeridanShop('H-11')" class="bg-slate-800 hover:bg-rose-950/40 p-2 rounded border border-slate-700 text-center text-[11px] font-bold transition">
+                                        🍡 傳奇爆款不辣年糕：빨간떡볶이
+                                    </button>
+                                    <button onclick="selectHaeridanShop('H-12')" class="bg-slate-800 hover:bg-rose-950/40 p-2 rounded border border-slate-700 text-center text-[11px] font-bold transition">
+                                        🍲 24H 濃郁豬肉湯飯：밀양순대돼지국밥
+                                    </button>
+                                </div>
+
+                                <div class="text-center text-[10px] text-slate-500 tracking-widest mt-3 uppercase">▼ 南側（往 Felix 飯店與海灘）</div>
+                            </div>
+
+                            <!-- 微觀店家導航與介紹面板卡片（動態切換渲染區） -->
+                            <div id="haeridan-sub-card" class="bg-gradient-to-br from-amber-50 to-orange-50 border border-orange-200 rounded-xl p-4 text-xs shadow-sm select-none">
+                                <div class="flex items-center gap-2 border-b border-orange-200 pb-2 mb-2">
+                                    <span class="text-base">🧭</span>
+                                    <strong class="text-orange-900 text-sm font-bold">請點擊上方任意店家圖標查看親子攻略</strong>
+                                </div>
+                                <p class="text-slate-600 leading-relaxed">地圖已為您校正完相對方位感，拿出手機與身體面向鐵道舊址對齊，即可無腦不迷航！</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else if (event.code === "D4-3") {
+                // 【南浦洞老字號童裝巷弄挖寶特輯】
+                if (imgContainer) imgContainer.classList.remove('hidden');
+                if (actionButtonsZone) actionButtonsZone.classList.remove('hidden');
+                if (descZone) {
+                    descZone.innerHTML = `
+                        <p class="mb-4 font-medium text-slate-700">從博物館下樓直接進入南浦洞核心平路街區，<strong>推車全面解鎖！</strong> 主攻與傳統市場交界的小街，入手高 CP 值、充滿設計感的正韓空運小童衣物，累了還能隨時進雪冰咖啡廳吹冷氣充電。</p>
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-orange-200 rounded-xl p-4 my-3 text-xs shadow-sm select-none">
+                            <div class="flex items-center gap-2 border-b border-orange-200 pb-2 mb-3">
+                                <span class="text-lg">🗺️</span>
+                                <span class="font-bold text-orange-800 text-sm tracking-wide">南浦洞「巷弄挖寶」童裝探險流線</span>
+                            </div>
+                            <div class="space-y-3 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-orange-200">
+                                <div class="flex items-start gap-3 pl-6 relative">
+                                    <span class="absolute left-1 top-1 w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                    <div><strong class="text-orange-900 block font-bold">🎬 起點：電影體驗博物館</strong><span class="text-slate-500 block">下樓直通地面大街</span></div>
+                                </div>
+                                <div class="flex items-start gap-3 pl-6 relative">
+                                    <span class="absolute left-1 top-1 w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                    <a href="https://map.naver.com/p/entry/place/490540483?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202607192152%26locale%3Dko%26svcName%3Dmap_pcv5" target="_blank" class="block bg-white border border-orange-100 p-2 rounded-lg shadow-2xs font-bold text-orange-700">
+                                        🌟 光復路時尚主街 (광복로 패ชั่น거리) <i class="fa-solid fa-square-arrow-up-right text-[10px]"></i>
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 pl-6 py-1">
+                                    <a href="https://map.naver.com/p/search/아리랑거리" target="_blank" class="bg-white border border-orange-100 p-2 rounded-lg shadow-2xs block">
+                                        <span class="font-bold text-orange-700 block">🦖 阿里郎街 (아리랑거리)</span>
+                                        <span class="text-[10px] text-slate-500 block mt-0.5">★平價童裝一條街★ 密集的服飾鋪，純棉莫蘭迪色系套裝集中地！</span>
+                                    </a>
+                                    <a href="https://map.naver.com/p/search/국제시장" target="_blank" class="bg-white border border-orange-100 p-2 rounded-lg shadow-2xs block">
+                                        <span class="font-bold text-orange-700 block">🧸 國際市場 (국제시장)</span>
+                                        <span class="text-[10px] text-slate-500 block mt-0.5">★玩具與文具批發★ 用超值價格挖寶貼紙書與韓國卡通小汽車。</span>
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 pl-6 py-1">
+                                    <a href="https://map.naver.com/p/search/BIFF%EA%B4%91%EC%9E%A5/place/2075998544?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D2%26timestamp%3D202607192149%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3DBIFF%EA%B4%91%EC%9E%A5" target="_blank" class="bg-white border border-orange-100 p-2 rounded-lg shadow-2xs block">
+                                        <span class="font-bold text-orange-700 block">🥞 BIFF 廣場 (黑糖餅)</span>
+                                    </a>
+                                    <a href="https://map.naver.com/p/search/%EB%A1%AF%EB%8D%B0%EB%B0%B1%ED%99%94%EC%A0%90+%EA%B4%91%EB%B3%B5%EC%A0%90/place/13291279?c=15.00,0,0,0,dh&isCorrectAnswer=true&placePath=%3Fbk_query%253D%2525EB%2525A1%2525AF%2525EB%2525B0%2525B1%2525ED%252599%252594%2525EC%2525A0%252590%252520%2525EA%2525B4%252591%2525EB%2525B3%2525B5%2525EC%2525A0%252590%2526entry%253Dbmp" target="_blank" class="bg-white border border-orange-100 p-2 rounded-lg shadow-2xs block">
+                                        <span class="font-bold text-orange-700 block">🛍️ 樂天百貨 (終點叫車)</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                // 一般正常景點模式
+                if (imgContainer) imgContainer.classList.remove('hidden');
+                if (actionButtonsZone) actionButtonsZone.classList.remove('hidden');
+                if (descZone) descZone.innerHTML = event.desc || "";
                 
-                // [關鍵修復] 當照片載入成功後，立刻把提示文字關閉，不佔用任何版面空間
-                imgElement.onload = function() {
+                const imgElement = document.getElementById('panel-img');
+                const placeholder = document.getElementById('panel-img-placeholder');
+                if (imgElement) {
+                    imgElement.src = `${event.code}.jpg`;
                     imgElement.classList.remove('hidden');
                     if (placeholder) placeholder.classList.add('hidden');
-                };
-                
-                imgElement.onerror = function() {
-                    this.onerror = null;
-                    let fallbackUrl = "https://images.unsplash.com/photo-1542296332-2e4473fac563?auto=format&fit=crop&w=600&q=80";
-                    if (event.tag && event.tag.includes("美食")) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.tag && event.tag.includes("飯店")) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.name && (event.name.includes("火車") || event.name.includes("膠囊"))) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1532103054090-334e6e60b73a?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.name && (event.name.includes("滑車") || event.name.includes("Luge"))) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1518605333140-552e4b373d3d?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.name && (event.name.includes("積木") || event.name.includes("Brick"))) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1585338107529-13afc5f02586?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.name && (event.name.includes("Club") || event.name.includes("Oasis"))) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=600&q=80";
-                    } else if (event.name && (event.name.includes("博物館") || event.name.includes("電影") || event.name.includes("光復路"))) {
-                        fallbackUrl = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80";
-                    }
-                    this.src = fallbackUrl;
-                    imgElement.classList.remove('hidden');
-                    if (placeholder) placeholder.classList.add('hidden');
-                };
+                    imgElement.onerror = function() {
+                        this.onerror = null;
+                        let fallbackUrl = "https://images.unsplash.com/photo-1542296332-2e4473fac563?auto=format&fit=crop&w=600&q=80";
+                        if (event.tag && event.tag.includes("美食")) {
+                            fallbackUrl = "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80";
+                        } else if (event.tag && event.tag.includes("飯店")) {
+                            fallbackUrl = "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80";
+                        }
+                        this.src = fallbackUrl;
+                    };
+                }
             }
 
             if (!isInitialLoad) {
-                document.getElementById('detail-card').classList.remove('max-lg:hidden');
+                const detailCard = document.getElementById('detail-card');
+                if (detailCard) detailCard.classList.remove('max-lg:hidden');
                 document.body.classList.add('max-lg:overflow-hidden');
             }
+        }
+
+        // 方案 A 專屬：海理團路微觀店家點擊連動處理程序
+        function selectHaeridanShop(shopId) {
+            const shop = haeridanShops[shopId];
+            if (!shop) return;
+            
+            let icon = "🎁";
+            if (shop.type === "cafe") icon = "☕";
+            if (shop.type === "shop") icon = "🛍️";
+            if (shop.type === "food") icon = "🥢";
+
+            const subCard = document.getElementById('haeridan-sub-card');
+            if (subCard) {
+                subCard.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-orange-200 pb-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-base">${icon}</span>
+                                <strong class="text-orange-900 text-sm font-bold">${shop.name}</strong>
+                            </div>
+                            <span class="text-[10px] bg-orange-100 text-orange-800 font-mono font-bold px-2 py-0.5 rounded">${shopId}</span>
+                        </div>
+                        
+                        <p class="text-slate-700 leading-normal text-xs bg-white p-2.5 rounded-lg border border-orange-100">${shop.desc}</p>
+                        
+                        <!-- 快速導航與一鍵代碼秒複製元件 -->
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <div onclick="copyTextDirect('${shop.korName}', this)" class="bg-slate-900 hover:bg-slate-800 text-white p-2 rounded-lg text-center cursor-pointer transition active:scale-95 text-[11px] font-medium flex items-center justify-center gap-1">
+                                <i class="fa-regular fa-copy text-emerald-400"></i> <span>複製韓文店名</span>
+                            </div>
+                            <a href="${shop.naver}" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white p-2 rounded-lg text-center transition active:scale-95 text-[11px] font-bold flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-location-arrow"></i> Naver 直達導航
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 獨立型一鍵代碼複製函式 (內建防重刷安全鎖門)
+        function copyTextDirect(text, element) {
+            if (element.dataset.isCopying === "true") return;
+            element.dataset.isCopying = "true";
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = element.innerHTML;
+                element.innerHTML = `<i class="fa-solid fa-check text-emerald-400 animate-bounce"></i> <span>成功！可直接貼上</span>`;
+                setTimeout(() => {
+                    element.innerHTML = originalHTML;
+                    delete element.dataset.isCopying;
+                }, 1200);
+            });
         }
 
         // 行程面板一鍵點擊秒複製功能 (加入防重刷安全鎖)
@@ -731,7 +740,7 @@
             });
         }
 
-        // 口袋韓文專用獨立複製與還原邏輯（完全修復 Race Condition 連點卡死臭蟲）
+        // 口袋韓文專用獨立複製與還原邏輯
         function phraseCopy(element) {
             if (element.dataset.isCopying === "true") return;
             element.dataset.isCopying = "true";
@@ -757,7 +766,8 @@
 
         // 手機版返回時間軸彈窗觸發器
         function closeMobileModal() {
-            document.getElementById('detail-card').classList.add('max-lg:hidden');
+            const detailCard = document.getElementById('detail-card');
+            if (detailCard) detailCard.classList.add('max-lg:hidden');
             document.body.classList.remove('max-lg:overflow-hidden');
         }
 
